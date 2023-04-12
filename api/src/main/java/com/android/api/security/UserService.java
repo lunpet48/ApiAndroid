@@ -26,4 +26,15 @@ public class UserService implements UserDetailsService {
         }
         return new AccountDetails(account);
     }
+
+    public UserDetails loadUserById(Long id) {
+        Account account = accountRepository.findById(id).get();
+        try {
+            if (account == null) throw new AccountNotFoundException();
+        } catch (AccountNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return new AccountDetails(account);
+    } 
 }
