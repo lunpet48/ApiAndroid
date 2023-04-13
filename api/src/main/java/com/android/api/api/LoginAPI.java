@@ -1,46 +1,44 @@
 package com.android.api.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.android.api.dto.LoginDto;
-import com.android.api.security.AccountDetails;
-import com.android.api.security.JwtTokenProvider;
+import com.android.api.dto.SignUpDto;
+import com.android.api.entity.Account;
+import com.android.api.service.AccountService;
 
 @RestController
-@RequestMapping("api/login")
+@RequestMapping("/auth")
 public class LoginAPI {
-    @Autowired
-    AuthenticationManager authenticationManager;
 
     @Autowired
-    private JwtTokenProvider tokenProvider;
+    AccountService accountService;
 
-    @PostMapping
+    @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
+        String jwt = accountService.login(loginDto.getUsername(), loginDto.getPassword());
+        
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Authorization", "Bearer " + jwt);
 
-        // Xác thực từ username và password.
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginDto.getUsername(),
-                        loginDto.getPassword()));
 
-        // Nếu không xảy ra exception tức là thông tin hợp lệ
-        // Set thông tin authentication vào Security Context
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return ResponseEntity.ok().headers(responseHeaders).body("Login successfully");
+    }
 
-        // Trả về jwt cho người dùng.
-        String jwt = tokenProvider.generateToken((AccountDetails) authentication.getPrincipal());
-        System.out.println(jwt);
-        return ResponseEntity.ok().body(jwt);
+    @PostMapping("/signup")
+    public ResponseEntity<?> registerUser(@RequestBody SignUpDto signUpDto){
+        Account account = signUpDto.toEntity();
+
+        String message = accountService.registerUser(account);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
 
 }
