@@ -12,6 +12,8 @@ create table accounts(
 	create_at datetime default now(),
     update_at datetime default now(),
     is_deleted boolean default false,
+    one_time_password varchar(64),
+    otp_requested_time datetime,
     primary key (account_id)
 );
 
