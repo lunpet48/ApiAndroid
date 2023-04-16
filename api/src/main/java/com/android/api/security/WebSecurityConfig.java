@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.android.api.entity.Role;
+
 @Configuration
 @EnableMethodSecurity
 public class WebSecurityConfig {
@@ -56,6 +58,8 @@ public class WebSecurityConfig {
                         authorize.requestMatchers(HttpMethod.GET, "/auth/**").permitAll()
                                 .requestMatchers("/auth/login/**").permitAll()
                                 .requestMatchers("/auth/signup/**").permitAll()
+                                .requestMatchers("/admin").hasRole(Role.ROLE_ADMIN.name())
+                                .requestMatchers("/", "/search/**").permitAll()
                                 .anyRequest().authenticated().and().addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 
                 );

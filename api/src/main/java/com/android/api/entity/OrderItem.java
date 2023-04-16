@@ -3,7 +3,6 @@ package com.android.api.entity;
 import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 
 /**
@@ -20,23 +19,31 @@ public class OrderItem implements Serializable {
 	@Column(name="order_item_id")
 	private long orderItemId;
 
-	@Column(name="color_id")
-	private BigInteger colorId;
-
 	private int count;
 
 	private BigDecimal discount;
 
-	@Column(name="order_id")
-	private BigInteger orderId;
-
-	@Column(name="product_id")
-	private BigInteger productId;
-
-	@Column(name="size_id")
-	private BigInteger sizeId;
-
 	private BigDecimal subtotal;
+
+	//bi-directional many-to-one association to Color
+	@ManyToOne
+	@JoinColumn(name="color_id")
+	private Color color;
+
+	//bi-directional many-to-one association to Size
+	@ManyToOne
+	@JoinColumn(name="size_id")
+	private Size size;
+
+	//bi-directional many-to-one association to Order
+	@ManyToOne
+	@JoinColumn(name="order_id")
+	private Order order;
+
+	//bi-directional many-to-one association to Product
+	@ManyToOne
+	@JoinColumn(name="product_id")
+	private Product product;
 
 	public OrderItem() {
 	}
@@ -47,14 +54,6 @@ public class OrderItem implements Serializable {
 
 	public void setOrderItemId(long orderItemId) {
 		this.orderItemId = orderItemId;
-	}
-
-	public BigInteger getColorId() {
-		return this.colorId;
-	}
-
-	public void setColorId(BigInteger colorId) {
-		this.colorId = colorId;
 	}
 
 	public int getCount() {
@@ -73,36 +72,44 @@ public class OrderItem implements Serializable {
 		this.discount = discount;
 	}
 
-	public BigInteger getOrderId() {
-		return this.orderId;
-	}
-
-	public void setOrderId(BigInteger orderId) {
-		this.orderId = orderId;
-	}
-
-	public BigInteger getProductId() {
-		return this.productId;
-	}
-
-	public void setProductId(BigInteger productId) {
-		this.productId = productId;
-	}
-
-	public BigInteger getSizeId() {
-		return this.sizeId;
-	}
-
-	public void setSizeId(BigInteger sizeId) {
-		this.sizeId = sizeId;
-	}
-
 	public BigDecimal getSubtotal() {
 		return this.subtotal;
 	}
 
 	public void setSubtotal(BigDecimal subtotal) {
 		this.subtotal = subtotal;
+	}
+
+	public Color getColor() {
+		return this.color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
+
+	public Size getSize() {
+		return this.size;
+	}
+
+	public void setSize(Size size) {
+		this.size = size;
+	}
+
+	public Order getOrder() {
+		return this.order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
+	}
+
+	public Product getProduct() {
+		return this.product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
 	}
 
 }

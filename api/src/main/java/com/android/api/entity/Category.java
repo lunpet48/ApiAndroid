@@ -5,48 +5,47 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-
 /**
  * The persistent class for the categories database table.
  * 
  */
 @Entity
-@Table(name="categories")
-@NamedQuery(name="Category.findAll", query="SELECT c FROM Category c")
+@Table(name = "categories")
+@NamedQuery(name = "Category.findAll", query = "SELECT c FROM Category c")
 public class Category implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="category_id")
+	@Column(name = "category_id")
 	private long categoryId;
 
-	@Column(name="category_name")
+	@Column(name = "category_name")
 	private String categoryName;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="create_at")
+	@Column(name = "create_at")
 	private Date createAt;
 
 	private String description;
 
-	@Column(name="is_deleted")
+	@Column(name = "is_deleted")
 	private byte isDeleted;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="update_at")
+	@Column(name = "update_at")
 	private Date updateAt;
 
-	//bi-directional many-to-one association to Category
+	// bi-directional many-to-one association to Category
 	@ManyToOne
-	@JoinColumn(name="parent_id")
+	@JoinColumn(name = "parent_id")
 	private Category category;
 
-	//bi-directional many-to-one association to Category
-	@OneToMany(mappedBy="category")
+	// bi-directional many-to-one association to Category
+	@OneToMany(mappedBy = "category")
 	private List<Category> categories;
 
-	//bi-directional many-to-one association to Product
-	@OneToMany(mappedBy="category")
+	// bi-directional many-to-one association to Product
+	@OneToMany(mappedBy = "category")
 	private List<Product> products;
 
 	public Category() {

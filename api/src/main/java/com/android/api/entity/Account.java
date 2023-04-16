@@ -5,32 +5,31 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-
 /**
  * The persistent class for the accounts database table.
  * 
  */
 @Entity
-@Table(name="accounts")
-@NamedQuery(name="Account.findAll", query="SELECT a FROM Account a")
+@Table(name = "accounts")
+@NamedQuery(name = "Account.findAll", query = "SELECT a FROM Account a")
 public class Account implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="account_id")
+	@Column(name = "account_id")
 	private long accountId;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="create_at")
+	@Column(name = "create_at")
 	private Date createAt;
 
-	@Column(name="hash_code")
+	@Column(name = "hash_code")
 	private String hashCode;
 
-	@Column(name="is_active")
+	@Column(name = "is_active")
 	private byte isActive;
 
-	@Column(name="is_deleted")
+	@Column(name = "is_deleted")
 	private byte isDeleted;
 
 	private String role;
@@ -38,15 +37,41 @@ public class Account implements Serializable {
 	private String salt;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="update_at")
+	@Column(name = "update_at")
 	private Date updateAt;
 
 	private String username;
 
-	//bi-directional many-to-one association to Customer
-	@OneToMany(mappedBy="account")
+	// bi-directional many-to-one association to Customer
+	@OneToMany(mappedBy = "account")
 	private List<Customer> customers;
 
+	private static final long OTP_VALID_DURATION = 5 * 60 * 1000;   // 5 minutes
+     
+    @Column(name = "one_time_password")
+    private String oneTimePassword;
+     
+    @Column(name = "otp_requested_time")
+    private Date otpRequestedTime;
+     
+     
+    public String getOneTimePassword() {
+		return oneTimePassword;
+	}
+
+	public void setOneTimePassword(String oneTimePassword) {
+		this.oneTimePassword = oneTimePassword;
+	}
+
+	public Date getOtpRequestedTime() {
+		return otpRequestedTime;
+	}
+
+	public void setOtpRequestedTime(Date otpRequestedTime) {
+		this.otpRequestedTime = otpRequestedTime;
+	}
+
+	
 	public Account() {
 	}
 
@@ -97,11 +122,11 @@ public class Account implements Serializable {
 	public void setRole(Role role) {
 		this.role = role.name();
 	}
-
+	
 	public String getSalt() {
 		return this.salt;
 	}
-
+	
 	public void setSalt(String salt) {
 		this.salt = salt;
 	}
@@ -142,6 +167,22 @@ public class Account implements Serializable {
 		customer.setAccount(null);
 
 		return customer;
+	}
+	
+	public boolean isOTPRequired() {
+		if (this.getOneTimePassword() == null) {
+			return false;
+		}
+		 
+		long currentTimeInMillis = System.currentTimeMillis();
+		long otpRequestedTimeInMillis = this.otpRequestedTime.getTime();
+		 
+		if (otpRequestedTimeInMillis + OTP_VALID_DURATION < currentTimeInMillis) {
+			// OTP expires
+			return false;
+		}
+		 
+		return true;
 	}
 
 }

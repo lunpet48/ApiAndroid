@@ -4,44 +4,43 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import java.util.Date;
 
-
 /**
  * The persistent class for the item_stocks database table.
  * 
  */
 @Entity
-@Table(name="item_stocks")
-@NamedQuery(name="ItemStock.findAll", query="SELECT i FROM ItemStock i")
+@Table(name = "item_stocks")
+@NamedQuery(name = "ItemStock.findAll", query = "SELECT i FROM ItemStock i")
 public class ItemStock implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="item_stock_id")
+	@Column(name = "item_stock_id")
 	private long itemStockId;
 
 	private int count;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="create_at")
+	@Column(name = "create_at")
 	private Date createAt;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="update_at")
+	@Column(name = "update_at")
 	private Date updateAt;
 
-	//bi-directional many-to-one association to Color
+	// bi-directional many-to-one association to Color
 	@ManyToOne
-	@JoinColumn(name="color_id")
+	@JoinColumn(name = "color_id")
 	private Color color;
 
-	//bi-directional many-to-one association to Product
+	// bi-directional many-to-one association to Product
 	@ManyToOne
-	@JoinColumn(name="product_id")
+	@JoinColumn(name = "product_id")
 	private Product product;
 
-	//bi-directional many-to-one association to Size
+	// bi-directional many-to-one association to Size
 	@ManyToOne
-	@JoinColumn(name="size_id")
+	@JoinColumn(name = "size_id")
 	private Size size;
 
 	public ItemStock() {

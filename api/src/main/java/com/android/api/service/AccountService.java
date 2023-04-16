@@ -11,5 +11,7 @@ public interface AccountService {
     Optional<Account> findByUsername(String username);
     List<Account> findAll(); 
     Optional<Account> findById(Long id);
-    Account save(Account account); 
+    Account save(Account account);
+    void sendEmailVerify(String username, String email) throws Exception;
+    boolean verifyRegister(String username, int code) throws Exception;
 }

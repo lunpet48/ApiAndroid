@@ -4,51 +4,66 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.math.BigInteger;
-
+import java.util.List;
 
 /**
  * The persistent class for the orders database table.
  * 
  */
 @Entity
-@Table(name="orders")
-@NamedQuery(name="Order.findAll", query="SELECT o FROM Order o")
+@Table(name = "orders")
+@NamedQuery(name = "Order.findAll", query = "SELECT o FROM Order o")
 public class Order implements Serializable {
 	private static final long serialVersionUID = 1L;
+
+	@Id
+	@Column(name = "order_id")
+	private long orderId;
 
 	private String address;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="create_at")
+	@Column(name = "create_at")
 	private Date createAt;
 
 	private String description;
 
-	@Column(name="is_paid_before")
+	@Column(name = "is_paid_before")
 	private byte isPaidBefore;
 
 	private String notification;
 
-	@Id
-	@Column(name="order_id")
-	private BigInteger orderId;
-
 	private String status;
 
-	@Column(name="total_price")
+	@Column(name = "total_price")
 	private BigDecimal totalPrice;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="update_at")
+	@Column(name = "update_at")
 	private Date updateAt;
 
-	//bi-directional many-to-one association to Customer
+	// bi-directional many-to-one association to OrderItem
+	@OneToMany(mappedBy = "order")
+	private List<OrderItem> orderItems;
+
+	// bi-directional many-to-one association to Customer
 	@ManyToOne
-	@JoinColumn(name="customer_id")
+	@JoinColumn(name = "customer_id")
 	private Customer customer;
 
+	// bi-directional many-to-one association to Review
+	@OneToMany(mappedBy = "order")
+	private List<Review> reviews;
+
 	public Order() {
+	}
+
+	public long getOrderId() {
+		return this.orderId;
+	}
+
+	public void setOrderId(long orderId) {
+		this.orderId = orderId;
 	}
 
 	public String getAddress() {
@@ -91,14 +106,6 @@ public class Order implements Serializable {
 		this.notification = notification;
 	}
 
-	public BigInteger getOrderId() {
-		return this.orderId;
-	}
-
-	public void setOrderId(BigInteger orderId) {
-		this.orderId = orderId;
-	}
-
 	public String getStatus() {
 		return this.status;
 	}
@@ -123,12 +130,56 @@ public class Order implements Serializable {
 		this.updateAt = updateAt;
 	}
 
+	public List<OrderItem> getOrderItems() {
+		return this.orderItems;
+	}
+
+	public void setOrderItems(List<OrderItem> orderItems) {
+		this.orderItems = orderItems;
+	}
+
+	public OrderItem addOrderItem(OrderItem orderItem) {
+		getOrderItems().add(orderItem);
+		orderItem.setOrder(this);
+
+		return orderItem;
+	}
+
+	public OrderItem removeOrderItem(OrderItem orderItem) {
+		getOrderItems().remove(orderItem);
+		orderItem.setOrder(null);
+
+		return orderItem;
+	}
+
 	public Customer getCustomer() {
 		return this.customer;
 	}
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+
+	public List<Review> getReviews() {
+		return this.reviews;
+	}
+
+	public void setReviews(List<Review> reviews) {
+		this.reviews = reviews;
+	}
+
+	public Review addReview(Review review) {
+		getReviews().add(review);
+		review.setOrder(this);
+
+		return review;
+	}
+
+	public Review removeReview(Review review) {
+		getReviews().remove(review);
+		review.setOrder(null);
+
+		return review;
 	}
 
 }

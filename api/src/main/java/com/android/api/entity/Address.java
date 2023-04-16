@@ -8,27 +8,27 @@ import jakarta.persistence.*;
  * 
  */
 @Entity
-@Table(name="addresses")
-@NamedQuery(name="Address.findAll", query="SELECT a FROM Address a")
+@Table(name = "addresses")
+@NamedQuery(name = "Address.findAll", query = "SELECT a FROM Address a")
 public class Address implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="address_id")
+	@Column(name = "address_id")
 	private long addressId;
 
 	private String city;
 
 	private String district;
 
-	@Column(name="street_name")
+	@Column(name = "street_name")
 	private String streetName;
 
 	private String town;
 
-	//bi-directional many-to-one association to Customer
+	// bi-directional many-to-one association to Customer
 	@ManyToOne
-	@JoinColumn(name="customer_id")
+	@JoinColumn(name = "customer_id")
 	private Customer customer;
 
 	public Address() {

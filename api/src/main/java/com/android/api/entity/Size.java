@@ -5,49 +5,48 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-
 /**
  * The persistent class for the size database table.
  * 
  */
 @Entity
-@NamedQuery(name="Size.findAll", query="SELECT s FROM Size s")
+@NamedQuery(name = "Size.findAll", query = "SELECT s FROM Size s")
 public class Size implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="size_id")
+	@Column(name = "size_id")
 	private long sizeId;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="create_at")
+	@Column(name = "create_at")
 	private Date createAt;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="update_at")
+	@Column(name = "update_at")
 	private Date updateAt;
 
 	private String value;
 
-	//bi-directional many-to-one association to CartItem
-	@OneToMany(mappedBy="size")
+	// bi-directional many-to-one association to CartItem
+	@OneToMany(mappedBy = "size")
 	private List<CartItem> cartItems;
 
-	//bi-directional many-to-one association to ItemStock
-	@OneToMany(mappedBy="size")
+	// bi-directional many-to-one association to ItemStock
+	@OneToMany(mappedBy = "size")
 	private List<ItemStock> itemStocks;
 
-	//bi-directional many-to-many association to Product
+	// bi-directional many-to-one association to OrderItem
+	@OneToMany(mappedBy = "size")
+	private List<OrderItem> orderItems;
+
+	// bi-directional many-to-many association to Product
 	@ManyToMany
-	@JoinTable(
-		name="size_product"
-		, joinColumns={
-			@JoinColumn(name="size_id")
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="product_id")
-			}
-		)
+	@JoinTable(name = "size_product", joinColumns = {
+			@JoinColumn(name = "size_id")
+	}, inverseJoinColumns = {
+			@JoinColumn(name = "product_id")
+	})
 	private List<Product> products;
 
 	public Size() {
@@ -127,6 +126,28 @@ public class Size implements Serializable {
 		itemStock.setSize(null);
 
 		return itemStock;
+	}
+
+	public List<OrderItem> getOrderItems() {
+		return this.orderItems;
+	}
+
+	public void setOrderItems(List<OrderItem> orderItems) {
+		this.orderItems = orderItems;
+	}
+
+	public OrderItem addOrderItem(OrderItem orderItem) {
+		getOrderItems().add(orderItem);
+		orderItem.setSize(this);
+
+		return orderItem;
+	}
+
+	public OrderItem removeOrderItem(OrderItem orderItem) {
+		getOrderItems().remove(orderItem);
+		orderItem.setSize(null);
+
+		return orderItem;
 	}
 
 	public List<Product> getProducts() {

@@ -5,43 +5,42 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
-
 /**
  * The persistent class for the discounts database table.
  * 
  */
 @Entity
-@Table(name="discounts")
-@NamedQuery(name="Discount.findAll", query="SELECT d FROM Discount d")
+@Table(name = "discounts")
+@NamedQuery(name = "Discount.findAll", query = "SELECT d FROM Discount d")
 public class Discount implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="discount_id")
+	@Column(name = "discount_id")
 	private long discountId;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name="closing_date")
+	@Column(name = "closing_date")
 	private Date closingDate;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="create_at")
+	@Column(name = "create_at")
 	private Date createAt;
 
-	@Column(name="discount_value")
+	@Column(name = "discount_value")
 	private BigDecimal discountValue;
 
 	@Temporal(TemporalType.DATE)
-	@Column(name="starting_date")
+	@Column(name = "starting_date")
 	private Date startingDate;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="update_at")
+	@Column(name = "update_at")
 	private Date updateAt;
 
-	//bi-directional many-to-one association to Product
+	// bi-directional many-to-one association to Product
 	@ManyToOne
-	@JoinColumn(name="product_id")
+	@JoinColumn(name = "product_id")
 	private Product product;
 
 	public Discount() {

@@ -5,42 +5,41 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-
 /**
  * The persistent class for the carts database table.
  * 
  */
 @Entity
-@Table(name="carts")
-@NamedQuery(name="Cart.findAll", query="SELECT c FROM Cart c")
+@Table(name = "carts")
+@NamedQuery(name = "Cart.findAll", query = "SELECT c FROM Cart c")
 public class Cart implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="cart_id")
+	@Column(name = "cart_id")
 	private long cartId;
 
-	@Column(name="count_unique_items")
+	@Column(name = "count_unique_items")
 	private int countUniqueItems;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="create_at")
+	@Column(name = "create_at")
 	private Date createAt;
 
-	@Column(name="is_deleted")
+	@Column(name = "is_deleted")
 	private byte isDeleted;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="update_at")
+	@Column(name = "update_at")
 	private Date updateAt;
 
-	//bi-directional many-to-one association to CartItem
-	@OneToMany(mappedBy="cart")
+	// bi-directional many-to-one association to CartItem
+	@OneToMany(mappedBy = "cart")
 	private List<CartItem> cartItems;
 
-	//bi-directional many-to-one association to Customer
+	// bi-directional many-to-one association to Customer
 	@ManyToOne
-	@JoinColumn(name="customer_id")
+	@JoinColumn(name = "customer_id")
 	private Customer customer;
 
 	public Cart() {

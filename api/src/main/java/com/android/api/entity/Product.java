@@ -6,40 +6,39 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-
 /**
  * The persistent class for the products database table.
  * 
  */
 @Entity
-@Table(name="products")
-@NamedQuery(name="Product.findAll", query="SELECT p FROM Product p")
+@Table(name = "products")
+@NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p")
 public class Product implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="product_id")
+	@Column(name = "product_id")
 	private long productId;
 
 	private String brand;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="create_at")
+	@Column(name = "create_at")
 	private Date createAt;
 
 	private String description;
 
 	private String image;
 
-	@Column(name="is_active")
+	@Column(name = "is_active")
 	private byte isActive;
 
-	@Column(name="is_deleted")
+	@Column(name = "is_deleted")
 	private byte isDeleted;
 
 	private BigDecimal price;
 
-	@Column(name="product_name")
+	@Column(name = "product_name")
 	private String productName;
 
 	private BigDecimal rating;
@@ -47,41 +46,40 @@ public class Product implements Serializable {
 	private int sold;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="update_at")
+	@Column(name = "update_at")
 	private Date updateAt;
 
-	//bi-directional many-to-one association to CartItem
-	@OneToMany(mappedBy="product")
+	// bi-directional many-to-one association to CartItem
+	@OneToMany(mappedBy = "product")
 	private List<CartItem> cartItems;
 
-	//bi-directional many-to-many association to Color
-	@ManyToMany
-	@JoinTable(
-		name="color_product"
-		, joinColumns={
-			@JoinColumn(name="product_id")
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="color_id")
-			}
-		)
+	// bi-directional many-to-many association to Color
+	@ManyToMany(mappedBy = "products")
 	private List<Color> colors;
 
-	//bi-directional many-to-one association to Discount
-	@OneToMany(mappedBy="product")
+	// bi-directional many-to-one association to Discount
+	@OneToMany(mappedBy = "product")
 	private List<Discount> discounts;
 
-	//bi-directional many-to-one association to ItemStock
-	@OneToMany(mappedBy="product")
+	// bi-directional many-to-one association to ItemStock
+	@OneToMany(mappedBy = "product")
 	private List<ItemStock> itemStocks;
 
-	//bi-directional many-to-one association to Category
+	// bi-directional many-to-one association to OrderItem
+	@OneToMany(mappedBy = "product")
+	private List<OrderItem> orderItems;
+
+	// bi-directional many-to-one association to Category
 	@ManyToOne
-	@JoinColumn(name="category_id")
+	@JoinColumn(name = "category_id")
 	private Category category;
 
-	//bi-directional many-to-many association to Size
-	@ManyToMany(mappedBy="products")
+	// bi-directional many-to-one association to Review
+	@OneToMany(mappedBy = "product")
+	private List<Review> reviews;
+
+	// bi-directional many-to-many association to Size
+	@ManyToMany(mappedBy = "products")
 	private List<Size> sizes;
 
 	public Product() {
@@ -257,12 +255,56 @@ public class Product implements Serializable {
 		return itemStock;
 	}
 
+	public List<OrderItem> getOrderItems() {
+		return this.orderItems;
+	}
+
+	public void setOrderItems(List<OrderItem> orderItems) {
+		this.orderItems = orderItems;
+	}
+
+	public OrderItem addOrderItem(OrderItem orderItem) {
+		getOrderItems().add(orderItem);
+		orderItem.setProduct(this);
+
+		return orderItem;
+	}
+
+	public OrderItem removeOrderItem(OrderItem orderItem) {
+		getOrderItems().remove(orderItem);
+		orderItem.setProduct(null);
+
+		return orderItem;
+	}
+
 	public Category getCategory() {
 		return this.category;
 	}
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public List<Review> getReviews() {
+		return this.reviews;
+	}
+
+	public void setReviews(List<Review> reviews) {
+		this.reviews = reviews;
+	}
+
+	public Review addReview(Review review) {
+		getReviews().add(review);
+		review.setProduct(this);
+
+		return review;
+	}
+
+	public Review removeReview(Review review) {
+		getReviews().remove(review);
+		review.setProduct(null);
+
+		return review;
 	}
 
 	public List<Size> getSizes() {

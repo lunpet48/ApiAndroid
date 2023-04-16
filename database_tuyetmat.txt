@@ -1,0 +1,328 @@
+drop schema if exists fashion_store_android_v2;
+create schema fashion_store_android_v2 char set utf8mb4 collate utf8mb4_unicode_ci;
+use fashion_store_android_v2;
+
+create table accounts(
+	account_id bigint auto_increment,
+    username varchar(32) unique not null,
+    hash_code varchar(255) not null,
+    salt varchar(10) not null,
+    role enum ('ROLE_ADMIN', 'ROLE_COSTUMER') default 'ROLE_COSTUMER',
+	is_active boolean default false,
+	create_at datetime default now(),
+    update_at datetime default now(),
+    is_deleted boolean default false,
+    primary key (account_id)
+);
+
+create table customers(
+	customer_id bigint auto_increment,
+    account_id bigint unique,
+	first_name varchar(32) not null,
+    last_name varchar(32) not null,
+	phone varchar(12) unique null,
+    email varchar(320) unique not null,
+    e_wallet varchar(100) null,
+    avatar varchar(255) null,
+    create_at datetime default now(),
+    update_at datetime default now(),
+    is_deleted boolean default false,
+    primary key (customer_id)
+);
+
+create table addresses
+(
+	address_id bigint auto_increment,
+    customer_id bigint not null,
+    street_name varchar(100) not null, -- số nhà, tên đường
+    town varchar(100) not null, -- xã, thị trấn
+    district varchar(100) not null, -- quận, huyện
+    city varchar(100) not null, -- tỉnh, thành
+    primary key (address_id)
+);
+
+create table products
+(
+	product_id bigint auto_increment,
+    category_id bigint  not null,
+    product_name varchar(128) not null,
+    brand varchar(128) null,
+    price decimal(17,2) null,
+    description varchar(255) null,
+    sold int  default 0,
+    is_active boolean default true,
+    is_deleted boolean default false,
+    image varchar(512) null,
+	rating decimal(2,1) check (rating >= 0 and rating <=5) null, -- viết trigger tính trung bình cộng rating của review
+    create_at datetime default now(),
+    update_at datetime default now(),
+    primary key (product_id)
+);
+
+create table carts
+(
+	cart_id bigint auto_increment,
+    customer_id bigint unique not null,
+    count_unique_items int  default 0,
+    is_deleted boolean default false,
+	create_at datetime default now(),
+    update_at datetime default now(),
+    primary key(cart_id)
+);
+
+create table cart_items
+(
+	cart_item_id bigint auto_increment,
+    cart_id bigint not null,
+    product_id bigint not null,
+    size_id bigint not null,
+    color_id bigint not null,
+    count int not null,
+    is_deleted boolean default false,
+    create_at datetime default now(),
+    update_at datetime default now(),
+    primary key(cart_item_id)
+);
+
+create table orders
+(
+	order_id bigint auto_increment,
+    customer_id bigint not null,
+    address varchar(255) not null,
+    status enum ('Chờ xác nhận', 'Chờ đóng gói', 'Đã đóng gói', 'Đang vận chuyển', 'Đã giao hàng', 'Hàng gặp lỗi' , 'Đơn đã hủy', 'Yêu cầu hủy đơn') default 'Chờ xác nhận',    
+    is_paid_before boolean,
+    total_price decimal(17,2) not null,
+notification varchar(255) null, -- nêu lý do đơn hàng bị hủy và thông báo khác từ cửa hàng
+    description varchar(255) null, -- khách hàng nhập thông tin chi tiết cho đơn hàng
+    create_at datetime default now(),
+    update_at datetime default now(),
+    primary key (order_id)
+    --
+    -- Status work-flow: 'Chờ xác nhận' --> 'Chờ đóng gói' --------------------- 
+	--                         |                    |                          |
+    --                         |                    V           No             V
+    --                         |            'Yêu cầu hủy đơn' -------> 'Đã đóng gói' ---> 'Đang vận chuyển' --> 'Đã giao hàng'
+    --                         |                    | Yes
+    --                         |                    V
+    --                         ---------------> 'Đơn đã hủy'
+    --
+    -- Exception : 'Hàng gặp lỗi' --> 'Đơn đã hủy' --> Thông báo cho khách hàng là đơn hàng gặp lỗi
+    --
+);
+
+create table order_items
+(
+	order_item_id bigint auto_increment,
+    order_id bigint not null,
+    product_id bigint not null,
+	size_id bigint not null,
+    color_id bigint not null,
+    count int not null,
+    discount decimal(17,2) default 0,
+    subtotal decimal(17,2) not null,
+    primary key (order_item_id)
+);
+
+create table reviews
+(
+	review_id bigint auto_increment,
+    customer_id bigint not null,
+    product_id bigint not null,
+    order_id bigint not null,
+    content varchar(255) null,
+    rating decimal(2,1) check (rating >= 0 and rating <=5) null,
+	create_at datetime default now(),
+    primary key (review_id)
+);
+-- End customer Information
+-- Start Product Information
+create table categories
+(
+	category_id bigint auto_increment,
+    parent_id bigint null,
+    category_name varchar(32) not null,
+    description varchar(255) null,
+    is_deleted boolean default false,
+	create_at datetime default now(),
+    update_at datetime default now(),
+    primary key(category_id)
+);
+
+create table discounts
+(
+	discount_id bigint auto_increment,
+    product_id bigint not null,
+    discount_value decimal(3,2) check (discount_value > 0 and discount_value <= 1) not null,
+    starting_date date null,
+    closing_date date null,
+    create_at datetime default now(),
+    update_at datetime default now(),
+    primary key (discount_id)
+);
+
+create table size(
+	size_id bigint primary key,
+	create_at datetime default now(),
+    update_at datetime default now(),
+    value varchar(32)
+);
+
+create table color(
+	color_id bigint primary key,
+	create_at datetime default now(),
+    update_at datetime default now(),
+    value varchar(32)
+);
+
+create table item_stocks
+(
+	item_stock_id bigint ,
+    product_id bigint not null,
+    size_id bigint not null,
+    color_id bigint not null,
+    count int  not null,
+	create_at datetime default now(),
+    update_at datetime default now(),
+    primary key (item_stock_id)
+);
+-- End Create Table
+-- Start Relationship
+-- customer & Address
+alter table addresses
+add constraint fk_addresses_customer_id
+	foreign key (customer_id) 
+    references customers(customer_id); 
+    
+-- customer & Cart
+alter table carts
+	add constraint fk_cart_customer_
+    foreign key (customer_id)
+    references customers(customer_id);
+    
+-- customer & Account
+alter table customers
+	add constraint fk_customers_account_id
+    foreign key (account_id)
+    references accounts(account_id);
+    
+-- customer & Order
+alter table orders
+	add constraint fk_orders_customer_id
+    foreign key (customer_id)
+    references customers(customer_id);
+    
+-- customer & Review
+alter table reviews
+	add constraint fk_reviews_customer_id
+    foreign key (customer_id)
+    references customers(customer_id);
+    
+-- Item Stock & Product
+alter table item_stocks
+	add constraint fk_item_stocks_product_id
+    foreign key (product_id)
+    references products(product_id);
+
+-- Order & Review
+alter table reviews
+	add constraint fk_reviews_order_id
+    foreign key (order_id)
+    references orders(order_id);
+
+-- Order & Order Item
+alter table order_items
+	add constraint fk_order_items_order_id
+    foreign key (order_id)
+    references orders(order_id);
+
+--  Order Item & Product
+alter table order_items
+add constraint fk_order_items_product_id
+foreign key (product_id)
+references products(product_id);
+
+-- Product & Review
+alter table reviews
+add constraint fk_reviews_product_id
+foreign key (product_id)
+references products(product_id);
+
+-- Cart & Cart Item
+alter table cart_items
+add constraint fk_cart_items_cart_id
+foreign key (cart_id)
+references carts(cart_id);
+
+-- Cart Item & Product
+alter table cart_items
+add constraint fk_cart_items_product_id
+foreign key (product_id)
+references products(product_id);
+
+-- Product & Category
+alter table products
+add constraint fk_products_category_id
+foreign key (category_id)
+references categories(category_id);
+
+-- Category & Category
+alter table categories
+add constraint fk_categories_parent_id
+foreign key (parent_id)
+references categories(category_id);
+
+-- Discount & Product
+alter table discounts
+add constraint fk_discounts_product_id
+foreign key (product_id)
+references products(product_id);
+
+-- Size & Product
+create table size_product(
+	product_id bigint,
+    size_id bigint,
+    primary key (product_id, size_id),
+    foreign key (product_id) references products(product_id),
+    foreign key (size_id) references size(size_id)
+);
+
+-- Color & Product
+create table color_product(
+	product_id bigint,
+    color_id bigint,
+    primary key (product_id, color_id),
+    foreign key (product_id) references products(product_id),
+    foreign key (color_id) references color(color_id)
+);
+
+-- Size & Item Stock
+alter table item_stocks
+add constraint fk_item_stocks_size_id
+foreign key (size_id) references size(size_id);
+
+-- Color & Item Stock
+alter table item_stocks
+add constraint fk_item_stocks_color_id
+foreign key (color_id) references color(color_id);
+
+-- Size & Cart Item
+alter table cart_items
+add constraint fk_cart_items_size_id
+foreign key (size_id) references size(size_id);
+
+-- Color & Cart Item
+alter table cart_items
+add constraint fk_cart_items_color_id
+foreign key (color_id) references color(color_id);
+
+-- Size & Order Item
+alter table order_items
+add constraint fk_order_item_size_id
+foreign key (size_id) references size(size_id);
+
+-- Color & Order Item
+alter table order_items
+add constraint fk_order_item_color_id
+foreign key (color_id) references color(color_id);
+
+-- -- End Relationshipalter table customers  add constraint fk_customers_account_id     foreign key (account_id)     references account(account_id)

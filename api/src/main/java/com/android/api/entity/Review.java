@@ -4,41 +4,43 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.math.BigInteger;
-
 
 /**
  * The persistent class for the reviews database table.
  * 
  */
 @Entity
-@Table(name="reviews")
-@NamedQuery(name="Review.findAll", query="SELECT r FROM Review r")
+@Table(name = "reviews")
+@NamedQuery(name = "Review.findAll", query = "SELECT r FROM Review r")
 public class Review implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="review_id")
+	@Column(name = "review_id")
 	private long reviewId;
 
 	private String content;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="create_at")
+	@Column(name = "create_at")
 	private Date createAt;
-
-	@Column(name="order_id")
-	private BigInteger orderId;
-
-	@Column(name="product_id")
-	private BigInteger productId;
 
 	private BigDecimal rating;
 
-	//bi-directional many-to-one association to Customer
+	// bi-directional many-to-one association to Customer
 	@ManyToOne
-	@JoinColumn(name="customer_id")
+	@JoinColumn(name = "customer_id")
 	private Customer customer;
+
+	// bi-directional many-to-one association to Order
+	@ManyToOne
+	@JoinColumn(name = "order_id")
+	private Order order;
+
+	// bi-directional many-to-one association to Product
+	@ManyToOne
+	@JoinColumn(name = "product_id")
+	private Product product;
 
 	public Review() {
 	}
@@ -67,22 +69,6 @@ public class Review implements Serializable {
 		this.createAt = createAt;
 	}
 
-	public BigInteger getOrderId() {
-		return this.orderId;
-	}
-
-	public void setOrderId(BigInteger orderId) {
-		this.orderId = orderId;
-	}
-
-	public BigInteger getProductId() {
-		return this.productId;
-	}
-
-	public void setProductId(BigInteger productId) {
-		this.productId = productId;
-	}
-
 	public BigDecimal getRating() {
 		return this.rating;
 	}
@@ -97,6 +83,22 @@ public class Review implements Serializable {
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+
+	public Order getOrder() {
+		return this.order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
+	}
+
+	public Product getProduct() {
+		return this.product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
 	}
 
 }

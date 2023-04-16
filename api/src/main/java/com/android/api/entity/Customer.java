@@ -5,66 +5,65 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-
 /**
  * The persistent class for the customers database table.
  * 
  */
 @Entity
-@Table(name="customers")
-@NamedQuery(name="Customer.findAll", query="SELECT c FROM Customer c")
+@Table(name = "customers")
+@NamedQuery(name = "Customer.findAll", query = "SELECT c FROM Customer c")
 public class Customer implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="customer_id")
+	@Column(name = "customer_id")
 	private long customerId;
 
 	private String avatar;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="create_at")
+	@Column(name = "create_at")
 	private Date createAt;
 
-	@Column(name="e_wallet")
+	@Column(name = "e_wallet")
 	private String eWallet;
 
 	private String email;
 
-	@Column(name="first_name")
+	@Column(name = "first_name")
 	private String firstName;
 
-	@Column(name="is_deleted")
+	@Column(name = "is_deleted")
 	private byte isDeleted;
 
-	@Column(name="last_name")
+	@Column(name = "last_name")
 	private String lastName;
 
 	private String phone;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="update_at")
+	@Column(name = "update_at")
 	private Date updateAt;
 
-	//bi-directional many-to-one association to Address
-	@OneToMany(mappedBy="customer")
+	// bi-directional many-to-one association to Address
+	@OneToMany(mappedBy = "customer")
 	private List<Address> addresses;
 
-	//bi-directional many-to-one association to Cart
-	@OneToMany(mappedBy="customer")
+	// bi-directional many-to-one association to Cart
+	@OneToMany(mappedBy = "customer")
 	private List<Cart> carts;
 
-	//bi-directional many-to-one association to Account
+	// bi-directional many-to-one association to Account
 	@ManyToOne
-	@JoinColumn(name="account_id")
+	@JoinColumn(name = "account_id")
 	private Account account;
 
-	//bi-directional many-to-one association to Order
-	@OneToMany(mappedBy="customer")
+	// bi-directional many-to-one association to Order
+	@OneToMany(mappedBy = "customer")
 	private List<Order> orders;
 
-	//bi-directional many-to-one association to Review
-	@OneToMany(mappedBy="customer")
+	// bi-directional many-to-one association to Review
+	@OneToMany(mappedBy = "customer")
 	private List<Review> reviews;
 
 	public Customer() {

@@ -5,41 +5,49 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-
 /**
  * The persistent class for the color database table.
  * 
  */
 @Entity
-@NamedQuery(name="Color.findAll", query="SELECT c FROM Color c")
+@NamedQuery(name = "Color.findAll", query = "SELECT c FROM Color c")
 public class Color implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="color_id")
+	@Column(name = "color_id")
 	private long colorId;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="create_at")
+	@Column(name = "create_at")
 	private Date createAt;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="update_at")
+	@Column(name = "update_at")
 	private Date updateAt;
 
 	private String value;
 
-	//bi-directional many-to-one association to CartItem
-	@OneToMany(mappedBy="color")
+	// bi-directional many-to-one association to CartItem
+	@OneToMany(mappedBy = "color")
 	private List<CartItem> cartItems;
 
-	//bi-directional many-to-many association to Product
-	@ManyToMany(mappedBy="colors")
+	// bi-directional many-to-many association to Product
+	@ManyToMany
+	@JoinTable(name = "color_product", joinColumns = {
+			@JoinColumn(name = "color_id")
+	}, inverseJoinColumns = {
+			@JoinColumn(name = "product_id")
+	})
 	private List<Product> products;
 
-	//bi-directional many-to-one association to ItemStock
-	@OneToMany(mappedBy="color")
+	// bi-directional many-to-one association to ItemStock
+	@OneToMany(mappedBy = "color")
 	private List<ItemStock> itemStocks;
+
+	// bi-directional many-to-one association to OrderItem
+	@OneToMany(mappedBy = "color")
+	private List<OrderItem> orderItems;
 
 	public Color() {
 	}
@@ -126,6 +134,28 @@ public class Color implements Serializable {
 		itemStock.setColor(null);
 
 		return itemStock;
+	}
+
+	public List<OrderItem> getOrderItems() {
+		return this.orderItems;
+	}
+
+	public void setOrderItems(List<OrderItem> orderItems) {
+		this.orderItems = orderItems;
+	}
+
+	public OrderItem addOrderItem(OrderItem orderItem) {
+		getOrderItems().add(orderItem);
+		orderItem.setColor(this);
+
+		return orderItem;
+	}
+
+	public OrderItem removeOrderItem(OrderItem orderItem) {
+		getOrderItems().remove(orderItem);
+		orderItem.setColor(null);
+
+		return orderItem;
 	}
 
 }
