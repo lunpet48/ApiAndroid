@@ -1,6 +1,7 @@
 package com.android.api.service.serviceImpl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,8 +41,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private JavaMailSender mailSender;
-
-    private Integer verifyerCode;
 
     @Override
     public List<Account> findAll() {
@@ -101,37 +100,55 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-	public void sendEmailVerify(String username, String email) throws Exception {
-		verifyerCode = (int) ((Math.random() * (999999 - 100000)) + 100000);
-		String subject = "Please verify your account";
-		String senderName = "Luan dep trai";
-		String mailContent = "<p>Dear :" + username + ",</p>";
-		mailContent += "<p>Plase enter the verifyer code below to verify your account.</p>";
+    public void sendEmailVerify(String username, String email, String OTP) throws Exception {
+        String subject = "Please verify your account";
+        String senderName = "ANHEMNHUTHETAYCHAN";
+        String mailContent = "<p>Dear :" + username + ",</p>";
+        mailContent += "<p>Plase enter the verifyer code below to verify your account.</p>";
 
-		mailContent += "<h1>" + String.valueOf(verifyerCode) + "</h1>";
+        mailContent += "<h1>" + OTP + "</h1>";
 
-		mailContent += "<p>Thank You <br> Luan dep trai Team</p>";
+        mailContent += "<p>Thank You <br> ANHEMNHUTHETAYCHAN Team</p>";
 
-		MimeMessage message = mailSender.createMimeMessage();
-		MimeMessageHelper helper = new MimeMessageHelper(message);
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
 
-		helper.setFrom("20110675@student.hcmute.edu.vn", senderName);
-		helper.setTo(email);
-		helper.setSubject(subject);
-		helper.setText(mailContent, true);
+        helper.setFrom("20110675@student.hcmute.edu.vn", senderName);
+        helper.setTo(email);
+        helper.setSubject(subject);
+        helper.setText(mailContent, true);
 
-		mailSender.send(message);
+        mailSender.send(message);
 
-	}
+    }
 
     @Override
-    public boolean verifyRegister(String username, int code) throws Exception {
-        Account account = accountRepository.findByUsername(username).get();
-        if (account != null && code == verifyerCode) {
-            account.setIsActive((byte) 1);
+    public boolean verifyRegister(String username, String code) throws Exception {
+        Optional<Account> account = accountRepository.findByUsername(username);
+        if (account.isPresent() && code.equals(account.get().getOneTimePassword())) {
+            account.get().setIsActive((byte) 1);
+            clearOTP(account.get());
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void generateOneTimePassword(Account account, String email) throws Exception {
+        String OTP = String.valueOf((int)(Math.random() * (999999 - 100000)) + 100000);
+        account.setOneTimePassword(OTP);
+        account.setOtpRequestedTime(new Date());
+
+        sendEmailVerify(account.getUsername(), email, OTP);
+
+        accountRepository.save(account);
+    }
+
+    @Override
+    public void clearOTP(Account account) {
+        account.setOneTimePassword(null);
+        account.setOtpRequestedTime(null);
+        accountRepository.save(account);
     }
 
     // @Override

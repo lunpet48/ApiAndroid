@@ -1,7 +1,6 @@
 package com.android.api.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,13 +33,21 @@ public class LoginAPI {
     public ResponseEntity<?> registerUser(@RequestBody SignUpDto signUpDto) throws Exception{
         Account account = signUpDto.toEntity();
         String message = accountService.registerUser(account);
-        accountService.sendEmailVerify(account.getUsername(), signUpDto.getEmail());
+
+        account = accountService.findByUsername(account.getUsername()).get();
+        
+        accountService.generateOneTimePassword(account, signUpDto.getEmail());
+
         return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
 
     @PostMapping("/signup/verify-email")
-    public ResponseEntity<?> verifyEmail(@RequestParam("email") String email, @RequestParam("code") int code) {
-        
+    public ResponseEntity<?> verifyEmail(@RequestParam("username") String username, @RequestParam("code") String code) throws Exception {
+        boolean result = accountService.verifyRegister(username, code);
+        if (result == false) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Verify email fail!!");
+        } 
+        return ResponseEntity.status(200).body("Verify email successfully!!");
     } 
 
 }

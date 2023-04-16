@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * The persistent class for the customers database table.
  * 
@@ -55,6 +57,7 @@ public class Customer implements Serializable {
 
 	// bi-directional many-to-one association to Account
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn(name = "account_id")
 	private Account account;
 
