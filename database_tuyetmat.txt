@@ -7,11 +7,13 @@ create table accounts(
     username varchar(32) unique not null,
     hash_code varchar(255) not null,
     salt varchar(10) not null,
-    role enum ('ROLE_ADMIN', 'ROLE_COSTUMER') default 'ROLE_COSTUMER',
+    role enum ('ROLE_ADMIN', 'ROLE_CUSTOMER') default 'ROLE_CUSTOMER',
 	is_active boolean default false,
 	create_at datetime default now(),
     update_at datetime default now(),
     is_deleted boolean default false,
+    one_time_password varchar(64),
+    otp_requested_time datetime,
     primary key (account_id)
 );
 
@@ -313,16 +315,6 @@ foreign key (size_id) references size(size_id);
 -- Color & Cart Item
 alter table cart_items
 add constraint fk_cart_items_color_id
-foreign key (color_id) references color(color_id);
-
--- Size & Order Item
-alter table order_items
-add constraint fk_order_item_size_id
-foreign key (size_id) references size(size_id);
-
--- Color & Order Item
-alter table order_items
-add constraint fk_order_item_color_id
 foreign key (color_id) references color(color_id);
 
 -- -- End Relationshipalter table customers  add constraint fk_customers_account_id     foreign key (account_id)     references account(account_id)
