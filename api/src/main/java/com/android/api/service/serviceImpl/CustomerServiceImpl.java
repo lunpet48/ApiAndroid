@@ -20,5 +20,10 @@ public class CustomerServiceImpl implements CustomerService {
         Optional<Customer> result = customerRepository.findByEmail(Email);
         return result.get();
     }
+
+    @Override
+    public Customer save(Customer customer) {
+        return customerRepository.save(customer);
+    }
     
 }
