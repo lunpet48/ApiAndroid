@@ -8,7 +8,7 @@ import com.android.api.entity.Account;
 public interface AccountService {
     String login(String username, String password);
 
-    String registerUser(Account account);
+    String registerUser(Account account, String email) throws Exception;
 
     Optional<Account> findByUsername(String username);
 

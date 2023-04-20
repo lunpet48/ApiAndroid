@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import com.android.api.entity.Account;
 import com.android.api.entity.Role;
 import com.android.api.repository.AccountRepository;
+import com.android.api.repository.CustomerRepository;
 import com.android.api.security.AccountDetails;
 import com.android.api.security.JwtTokenProvider;
 import com.android.api.service.AccountService;
@@ -29,6 +30,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     AccountRepository accountRepository;
+
+    @Autowired
+    CustomerRepository customerRepository;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -66,16 +70,23 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String registerUser(Account account) {
+    public String registerUser(Account account, String email) throws Exception {
         if (accountRepository.findByUsername(account.getUsername()).isPresent()) {
             return "Username is already taken!!!";
         }
+
+        if (customerRepository.findByEmail(email).isPresent()) {
+            return "Email is already taken!!!";
+        }
+
         // account.setHashCode(passwordEncoder.encode(account.getHashCode()));
         account.setIsActive((byte) 0);
         account.setIsDeleted((byte) 0);
         account.setSalt("1");
         account.setRole(Role.ROLE_CUSTOMER);
-
+        
+        generateOneTimePassword(account, email);
+        
         accountRepository.save(account);
 
         return "Created account successfully!!!";
@@ -135,13 +146,13 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void generateOneTimePassword(Account account, String email) throws Exception {
-        String OTP = String.valueOf((int)(Math.random() * (999999 - 100000)) + 100000);
+        String OTP = String.valueOf((int) (Math.random() * (999999 - 100000)) + 100000);
         account.setOneTimePassword(OTP);
         account.setOtpRequestedTime(new Date());
 
         sendEmailVerify(account.getUsername(), email, OTP);
 
-        accountRepository.save(account);
+        //accountRepository.save(account);
     }
 
     @Override

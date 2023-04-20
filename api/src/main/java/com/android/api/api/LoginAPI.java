@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.android.api.dto.LoginDto;
 import com.android.api.dto.SignUpDto;
 import com.android.api.entity.Account;
+import com.android.api.entity.Customer;
 import com.android.api.service.AccountService;
+import com.android.api.service.CustomerService;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/auth")
@@ -20,6 +24,12 @@ public class LoginAPI {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    CustomerService customerService;
+
+    @Autowired
+    HttpSession session;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
@@ -31,12 +41,12 @@ public class LoginAPI {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpDto signUpDto) throws Exception{
-        Account account = signUpDto.toEntity();
-        String message = accountService.registerUser(account);
+        Account account = signUpDto.toAccountEntity();
+        String message = accountService.registerUser(account, signUpDto.getEmail());
 
-        account = accountService.findByUsername(account.getUsername()).get();
+        Customer customer = signUpDto.toCustomerEntity(account);
         
-        accountService.generateOneTimePassword(account, signUpDto.getEmail());
+        session.setAttribute("customer", customer);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
@@ -46,8 +56,16 @@ public class LoginAPI {
         boolean result = accountService.verifyRegister(username, code);
         if (result == false) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Verify email fail!!");
-        } 
+        }
+        Account account = accountService.findByUsername(username).get();
+        
+        Customer customer = (Customer) session.getAttribute("customer");
+        // customer.setAccount(account);
+        // customerService.save(customer);
+
+        customerService.createCustomerAfterRegister(customer, account);
+
         return ResponseEntity.status(200).body("Verify email successfully!!");
-    } 
+    }
 
 }
