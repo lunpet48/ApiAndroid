@@ -66,7 +66,7 @@ public class AccountAPI {
                 account.setSalt(accountUpdate.getSalt());
                 account.setHashCode(accountUpdate.getHashCode());
                 account.setUpdateAt(new Date());
-                account.setCustomers(accountUpdate.getCustomers());
+                //account.setCustomers(accountUpdate.getCustomers());
                 return accountService.save(account);
             }).orElseThrow(() -> new AccountNotFoundException(id));
         

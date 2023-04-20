@@ -1,9 +1,17 @@
 package com.android.api.entity;
 
 import java.io.Serializable;
-import jakarta.persistence.*;
 import java.util.Date;
-import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 /**
  * The persistent class for the categories database table.
@@ -39,14 +47,6 @@ public class Category implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "parent_id")
 	private Category category;
-
-	// bi-directional many-to-one association to Category
-	@OneToMany(mappedBy = "category")
-	private List<Category> categories;
-
-	// bi-directional many-to-one association to Product
-	@OneToMany(mappedBy = "category")
-	private List<Product> products;
 
 	public Category() {
 	}
@@ -105,50 +105,6 @@ public class Category implements Serializable {
 
 	public void setCategory(Category category) {
 		this.category = category;
-	}
-
-	public List<Category> getCategories() {
-		return this.categories;
-	}
-
-	public void setCategories(List<Category> categories) {
-		this.categories = categories;
-	}
-
-	public Category addCategory(Category category) {
-		getCategories().add(category);
-		category.setCategory(this);
-
-		return category;
-	}
-
-	public Category removeCategory(Category category) {
-		getCategories().remove(category);
-		category.setCategory(null);
-
-		return category;
-	}
-
-	public List<Product> getProducts() {
-		return this.products;
-	}
-
-	public void setProducts(List<Product> products) {
-		this.products = products;
-	}
-
-	public Product addProduct(Product product) {
-		getProducts().add(product);
-		product.setCategory(this);
-
-		return product;
-	}
-
-	public Product removeProduct(Product product) {
-		getProducts().remove(product);
-		product.setCategory(null);
-
-		return product;
 	}
 
 }

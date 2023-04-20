@@ -1,9 +1,17 @@
 package com.android.api.entity;
 
 import java.io.Serializable;
-import jakarta.persistence.*;
 import java.util.Date;
-import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 /**
  * The persistent class for the carts database table.
@@ -32,10 +40,6 @@ public class Cart implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "update_at")
 	private Date updateAt;
-
-	// bi-directional many-to-one association to CartItem
-	@OneToMany(mappedBy = "cart")
-	private List<CartItem> cartItems;
 
 	// bi-directional many-to-one association to Customer
 	@ManyToOne
@@ -83,28 +87,6 @@ public class Cart implements Serializable {
 
 	public void setUpdateAt(Date updateAt) {
 		this.updateAt = updateAt;
-	}
-
-	public List<CartItem> getCartItems() {
-		return this.cartItems;
-	}
-
-	public void setCartItems(List<CartItem> cartItems) {
-		this.cartItems = cartItems;
-	}
-
-	public CartItem addCartItem(CartItem cartItem) {
-		getCartItems().add(cartItem);
-		cartItem.setCart(this);
-
-		return cartItem;
-	}
-
-	public CartItem removeCartItem(CartItem cartItem) {
-		getCartItems().remove(cartItem);
-		cartItem.setCart(null);
-
-		return cartItem;
 	}
 
 	public Customer getCustomer() {

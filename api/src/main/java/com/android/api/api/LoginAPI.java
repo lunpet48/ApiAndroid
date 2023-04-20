@@ -15,7 +15,6 @@ import com.android.api.dto.ResetPasswordDto;
 import com.android.api.dto.SignUpDto;
 import com.android.api.entity.Account;
 import com.android.api.entity.Customer;
-import com.android.api.exception.CustomerNotFoundException;
 import com.android.api.service.AccountService;
 import com.android.api.service.CustomerService;
 

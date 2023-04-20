@@ -28,18 +28,6 @@ public class Size implements Serializable {
 
 	private String value;
 
-	// bi-directional many-to-one association to CartItem
-	@OneToMany(mappedBy = "size")
-	private List<CartItem> cartItems;
-
-	// bi-directional many-to-one association to ItemStock
-	@OneToMany(mappedBy = "size")
-	private List<ItemStock> itemStocks;
-
-	// bi-directional many-to-one association to OrderItem
-	@OneToMany(mappedBy = "size")
-	private List<OrderItem> orderItems;
-
 	// bi-directional many-to-many association to Product
 	@ManyToMany
 	@JoinTable(name = "size_product", joinColumns = {
@@ -82,72 +70,6 @@ public class Size implements Serializable {
 
 	public void setValue(String value) {
 		this.value = value;
-	}
-
-	public List<CartItem> getCartItems() {
-		return this.cartItems;
-	}
-
-	public void setCartItems(List<CartItem> cartItems) {
-		this.cartItems = cartItems;
-	}
-
-	public CartItem addCartItem(CartItem cartItem) {
-		getCartItems().add(cartItem);
-		cartItem.setSize(this);
-
-		return cartItem;
-	}
-
-	public CartItem removeCartItem(CartItem cartItem) {
-		getCartItems().remove(cartItem);
-		cartItem.setSize(null);
-
-		return cartItem;
-	}
-
-	public List<ItemStock> getItemStocks() {
-		return this.itemStocks;
-	}
-
-	public void setItemStocks(List<ItemStock> itemStocks) {
-		this.itemStocks = itemStocks;
-	}
-
-	public ItemStock addItemStock(ItemStock itemStock) {
-		getItemStocks().add(itemStock);
-		itemStock.setSize(this);
-
-		return itemStock;
-	}
-
-	public ItemStock removeItemStock(ItemStock itemStock) {
-		getItemStocks().remove(itemStock);
-		itemStock.setSize(null);
-
-		return itemStock;
-	}
-
-	public List<OrderItem> getOrderItems() {
-		return this.orderItems;
-	}
-
-	public void setOrderItems(List<OrderItem> orderItems) {
-		this.orderItems = orderItems;
-	}
-
-	public OrderItem addOrderItem(OrderItem orderItem) {
-		getOrderItems().add(orderItem);
-		orderItem.setSize(this);
-
-		return orderItem;
-	}
-
-	public OrderItem removeOrderItem(OrderItem orderItem) {
-		getOrderItems().remove(orderItem);
-		orderItem.setSize(null);
-
-		return orderItem;
 	}
 
 	public List<Product> getProducts() {

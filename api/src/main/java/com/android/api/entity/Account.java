@@ -1,9 +1,17 @@
 package com.android.api.entity;
 
 import java.io.Serializable;
-import jakarta.persistence.*;
 import java.util.Date;
-import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 /**
  * The persistent class for the accounts database table.
@@ -41,10 +49,6 @@ public class Account implements Serializable {
 	private Date updateAt;
 
 	private String username;
-
-	// bi-directional many-to-one association to Customer
-	@OneToMany(mappedBy = "account")
-	private List<Customer> customers;
 
 	private static final long OTP_VALID_DURATION = 5 * 60 * 1000; // 5 minutes
 
@@ -143,28 +147,6 @@ public class Account implements Serializable {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public List<Customer> getCustomers() {
-		return this.customers;
-	}
-
-	public void setCustomers(List<Customer> customers) {
-		this.customers = customers;
-	}
-
-	public Customer addCustomer(Customer customer) {
-		getCustomers().add(customer);
-		customer.setAccount(this);
-
-		return customer;
-	}
-
-	public Customer removeCustomer(Customer customer) {
-		getCustomers().remove(customer);
-		customer.setAccount(null);
-
-		return customer;
 	}
 
 	public boolean isOTPExpired() {

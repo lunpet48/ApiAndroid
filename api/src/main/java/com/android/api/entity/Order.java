@@ -1,10 +1,18 @@
 package com.android.api.entity;
 
 import java.io.Serializable;
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 /**
  * The persistent class for the orders database table.
@@ -42,18 +50,10 @@ public class Order implements Serializable {
 	@Column(name = "update_at")
 	private Date updateAt;
 
-	// bi-directional many-to-one association to OrderItem
-	@OneToMany(mappedBy = "order")
-	private List<OrderItem> orderItems;
-
 	// bi-directional many-to-one association to Customer
 	@ManyToOne
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
-
-	// bi-directional many-to-one association to Review
-	@OneToMany(mappedBy = "order")
-	private List<Review> reviews;
 
 	public Order() {
 	}
@@ -130,56 +130,12 @@ public class Order implements Serializable {
 		this.updateAt = updateAt;
 	}
 
-	public List<OrderItem> getOrderItems() {
-		return this.orderItems;
-	}
-
-	public void setOrderItems(List<OrderItem> orderItems) {
-		this.orderItems = orderItems;
-	}
-
-	public OrderItem addOrderItem(OrderItem orderItem) {
-		getOrderItems().add(orderItem);
-		orderItem.setOrder(this);
-
-		return orderItem;
-	}
-
-	public OrderItem removeOrderItem(OrderItem orderItem) {
-		getOrderItems().remove(orderItem);
-		orderItem.setOrder(null);
-
-		return orderItem;
-	}
-
 	public Customer getCustomer() {
 		return this.customer;
 	}
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
-	}
-
-	public List<Review> getReviews() {
-		return this.reviews;
-	}
-
-	public void setReviews(List<Review> reviews) {
-		this.reviews = reviews;
-	}
-
-	public Review addReview(Review review) {
-		getReviews().add(review);
-		review.setOrder(this);
-
-		return review;
-	}
-
-	public Review removeReview(Review review) {
-		getReviews().remove(review);
-		review.setOrder(null);
-
-		return review;
 	}
 
 }

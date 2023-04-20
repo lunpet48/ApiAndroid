@@ -1,10 +1,20 @@
 package com.android.api.entity;
 
 import java.io.Serializable;
-import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 /**
  * The persistent class for the products database table.
@@ -49,34 +59,14 @@ public class Product implements Serializable {
 	@Column(name = "update_at")
 	private Date updateAt;
 
-	// bi-directional many-to-one association to CartItem
-	@OneToMany(mappedBy = "product")
-	private List<CartItem> cartItems;
-
 	// bi-directional many-to-many association to Color
 	@ManyToMany(mappedBy = "products")
 	private List<Color> colors;
-
-	// bi-directional many-to-one association to Discount
-	@OneToMany(mappedBy = "product")
-	private List<Discount> discounts;
-
-	// bi-directional many-to-one association to ItemStock
-	@OneToMany(mappedBy = "product")
-	private List<ItemStock> itemStocks;
-
-	// bi-directional many-to-one association to OrderItem
-	@OneToMany(mappedBy = "product")
-	private List<OrderItem> orderItems;
 
 	// bi-directional many-to-one association to Category
 	@ManyToOne
 	@JoinColumn(name = "category_id")
 	private Category category;
-
-	// bi-directional many-to-one association to Review
-	@OneToMany(mappedBy = "product")
-	private List<Review> reviews;
 
 	// bi-directional many-to-many association to Size
 	@ManyToMany(mappedBy = "products")
@@ -181,28 +171,6 @@ public class Product implements Serializable {
 		this.updateAt = updateAt;
 	}
 
-	public List<CartItem> getCartItems() {
-		return this.cartItems;
-	}
-
-	public void setCartItems(List<CartItem> cartItems) {
-		this.cartItems = cartItems;
-	}
-
-	public CartItem addCartItem(CartItem cartItem) {
-		getCartItems().add(cartItem);
-		cartItem.setProduct(this);
-
-		return cartItem;
-	}
-
-	public CartItem removeCartItem(CartItem cartItem) {
-		getCartItems().remove(cartItem);
-		cartItem.setProduct(null);
-
-		return cartItem;
-	}
-
 	public List<Color> getColors() {
 		return this.colors;
 	}
@@ -211,100 +179,12 @@ public class Product implements Serializable {
 		this.colors = colors;
 	}
 
-	public List<Discount> getDiscounts() {
-		return this.discounts;
-	}
-
-	public void setDiscounts(List<Discount> discounts) {
-		this.discounts = discounts;
-	}
-
-	public Discount addDiscount(Discount discount) {
-		getDiscounts().add(discount);
-		discount.setProduct(this);
-
-		return discount;
-	}
-
-	public Discount removeDiscount(Discount discount) {
-		getDiscounts().remove(discount);
-		discount.setProduct(null);
-
-		return discount;
-	}
-
-	public List<ItemStock> getItemStocks() {
-		return this.itemStocks;
-	}
-
-	public void setItemStocks(List<ItemStock> itemStocks) {
-		this.itemStocks = itemStocks;
-	}
-
-	public ItemStock addItemStock(ItemStock itemStock) {
-		getItemStocks().add(itemStock);
-		itemStock.setProduct(this);
-
-		return itemStock;
-	}
-
-	public ItemStock removeItemStock(ItemStock itemStock) {
-		getItemStocks().remove(itemStock);
-		itemStock.setProduct(null);
-
-		return itemStock;
-	}
-
-	public List<OrderItem> getOrderItems() {
-		return this.orderItems;
-	}
-
-	public void setOrderItems(List<OrderItem> orderItems) {
-		this.orderItems = orderItems;
-	}
-
-	public OrderItem addOrderItem(OrderItem orderItem) {
-		getOrderItems().add(orderItem);
-		orderItem.setProduct(this);
-
-		return orderItem;
-	}
-
-	public OrderItem removeOrderItem(OrderItem orderItem) {
-		getOrderItems().remove(orderItem);
-		orderItem.setProduct(null);
-
-		return orderItem;
-	}
-
 	public Category getCategory() {
 		return this.category;
 	}
 
 	public void setCategory(Category category) {
 		this.category = category;
-	}
-
-	public List<Review> getReviews() {
-		return this.reviews;
-	}
-
-	public void setReviews(List<Review> reviews) {
-		this.reviews = reviews;
-	}
-
-	public Review addReview(Review review) {
-		getReviews().add(review);
-		review.setProduct(this);
-
-		return review;
-	}
-
-	public Review removeReview(Review review) {
-		getReviews().remove(review);
-		review.setProduct(null);
-
-		return review;
 	}
 
 	public List<Size> getSizes() {

@@ -1,9 +1,18 @@
 package com.android.api.entity;
 
 import java.io.Serializable;
-import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 /**
  * The persistent class for the color database table.
@@ -28,10 +37,6 @@ public class Color implements Serializable {
 
 	private String value;
 
-	// bi-directional many-to-one association to CartItem
-	@OneToMany(mappedBy = "color")
-	private List<CartItem> cartItems;
-
 	// bi-directional many-to-many association to Product
 	@ManyToMany
 	@JoinTable(name = "color_product", joinColumns = {
@@ -40,14 +45,6 @@ public class Color implements Serializable {
 			@JoinColumn(name = "product_id")
 	})
 	private List<Product> products;
-
-	// bi-directional many-to-one association to ItemStock
-	@OneToMany(mappedBy = "color")
-	private List<ItemStock> itemStocks;
-
-	// bi-directional many-to-one association to OrderItem
-	@OneToMany(mappedBy = "color")
-	private List<OrderItem> orderItems;
 
 	public Color() {
 	}
@@ -84,78 +81,12 @@ public class Color implements Serializable {
 		this.value = value;
 	}
 
-	public List<CartItem> getCartItems() {
-		return this.cartItems;
-	}
-
-	public void setCartItems(List<CartItem> cartItems) {
-		this.cartItems = cartItems;
-	}
-
-	public CartItem addCartItem(CartItem cartItem) {
-		getCartItems().add(cartItem);
-		cartItem.setColor(this);
-
-		return cartItem;
-	}
-
-	public CartItem removeCartItem(CartItem cartItem) {
-		getCartItems().remove(cartItem);
-		cartItem.setColor(null);
-
-		return cartItem;
-	}
-
 	public List<Product> getProducts() {
 		return this.products;
 	}
 
 	public void setProducts(List<Product> products) {
 		this.products = products;
-	}
-
-	public List<ItemStock> getItemStocks() {
-		return this.itemStocks;
-	}
-
-	public void setItemStocks(List<ItemStock> itemStocks) {
-		this.itemStocks = itemStocks;
-	}
-
-	public ItemStock addItemStock(ItemStock itemStock) {
-		getItemStocks().add(itemStock);
-		itemStock.setColor(this);
-
-		return itemStock;
-	}
-
-	public ItemStock removeItemStock(ItemStock itemStock) {
-		getItemStocks().remove(itemStock);
-		itemStock.setColor(null);
-
-		return itemStock;
-	}
-
-	public List<OrderItem> getOrderItems() {
-		return this.orderItems;
-	}
-
-	public void setOrderItems(List<OrderItem> orderItems) {
-		this.orderItems = orderItems;
-	}
-
-	public OrderItem addOrderItem(OrderItem orderItem) {
-		getOrderItems().add(orderItem);
-		orderItem.setColor(this);
-
-		return orderItem;
-	}
-
-	public OrderItem removeOrderItem(OrderItem orderItem) {
-		getOrderItems().remove(orderItem);
-		orderItem.setColor(null);
-
-		return orderItem;
 	}
 
 }
