@@ -22,7 +22,11 @@ public interface AccountService {
 
     boolean verifyRegister(String username, String code) throws Exception;
 
+    boolean verifyResetPassword(Account account, String code) throws Exception;
+
     void generateOneTimePassword(Account account, String email) throws Exception;
 
     void clearOTP(Account account);
+
+    boolean resetPassword(Account account, String password, String repeatPassword, String code);
 }

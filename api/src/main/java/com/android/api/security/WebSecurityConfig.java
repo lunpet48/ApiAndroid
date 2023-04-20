@@ -55,7 +55,7 @@ public class WebSecurityConfig {
 
          http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
-                        authorize.requestMatchers(HttpMethod.GET, "/auth/**").permitAll()
+                        authorize.requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/auth/login/**").permitAll()
                                 .requestMatchers("/auth/signup/**").permitAll()
                                 .requestMatchers("/customer/**").permitAll()

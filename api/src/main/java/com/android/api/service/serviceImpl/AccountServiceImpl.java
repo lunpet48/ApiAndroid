@@ -114,8 +114,8 @@ public class AccountServiceImpl implements AccountService {
     public void sendEmailVerify(String username, String email, String OTP) throws Exception {
         String subject = "Please verify your account";
         String senderName = "ANHEMNHUTHETAYCHAN";
-        String mailContent = "<p>Dear :" + username + ",</p>";
-        mailContent += "<p>Plase enter the verifyer code below to verify your account.</p>";
+        String mailContent = "<p>Dear: " + username + ",</p>";
+        mailContent += "<p>Please enter the verifier code below to verify your account.</p>";
 
         mailContent += "<h1>" + OTP + "</h1>";
 
@@ -135,10 +135,11 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean verifyRegister(String username, String code) throws Exception {
-        Optional<Account> account = accountRepository.findByUsername(username);
-        if (account.isPresent() && code.equals(account.get().getOneTimePassword())) {
-            account.get().setIsActive((byte) 1);
-            clearOTP(account.get());
+        Optional<Account> optAccount = accountRepository.findByUsername(username);
+        Account account = optAccount.get();
+        if (optAccount.isPresent() && code.equals(account.getOneTimePassword()) && account.isOTPExpired()) {
+            account.setIsActive((byte) 1);
+            clearOTP(account);
             return true;
         }
         return false;
@@ -160,6 +161,27 @@ public class AccountServiceImpl implements AccountService {
         account.setOneTimePassword(null);
         account.setOtpRequestedTime(null);
         accountRepository.save(account);
+    }
+
+    @Override
+    public boolean verifyResetPassword(Account account, String code) throws Exception {
+        if (code.equals(account.getOneTimePassword())) {
+            clearOTP(account);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean resetPassword(Account account, String password, String repeatPassword, String code) {
+        if (password.equals(repeatPassword) && code.equals(account.getOneTimePassword()) && account.isOTPExpired()) {
+            account.setHashCode(passwordEncoder.encode(password));
+            clearOTP(account);
+            accountRepository.save(account);
+            return true;
+        }
+        return false;
+
     }
 
     // @Override

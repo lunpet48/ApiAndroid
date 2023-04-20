@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.android.api.entity.Account;
 import com.android.api.entity.Customer;
+import com.android.api.exception.CustomerNotFoundException;
 import com.android.api.repository.CustomerRepository;
 import com.android.api.service.CustomerService;
 
@@ -18,8 +19,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer findByEmail(String Email) {
-        Optional<Customer> result = customerRepository.findByEmail(Email);
-        return result.get();
+        Customer result = customerRepository.findByEmail(Email).orElseThrow(() -> new CustomerNotFoundException(Email));
+        return result;
     }
 
     @Override
