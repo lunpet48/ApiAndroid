@@ -1,6 +1,9 @@
 package com.android.api.entity;
 
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 
 /**
@@ -28,6 +31,7 @@ public class Address implements Serializable {
 
 	// bi-directional many-to-one association to Customer
 	@ManyToOne
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
 

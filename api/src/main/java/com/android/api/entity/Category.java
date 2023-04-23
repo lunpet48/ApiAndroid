@@ -22,7 +22,6 @@ import jakarta.persistence.TemporalType;
 @Entity
 @Table(name = "categories")
 @NamedQuery(name = "Category.findAll", query = "SELECT c FROM Category c")
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 public class Category implements Serializable {
 	private static final long serialVersionUID = 1L;
 

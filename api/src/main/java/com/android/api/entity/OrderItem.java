@@ -4,6 +4,8 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 
 /**
  * The persistent class for the order_items database table.
@@ -27,21 +29,25 @@ public class OrderItem implements Serializable {
 
 	//bi-directional many-to-one association to Color
 	@ManyToOne
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	@JoinColumn(name="color_id")
 	private Color color;
 
 	//bi-directional many-to-one association to Size
 	@ManyToOne
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	@JoinColumn(name="size_id")
 	private Size size;
 
 	//bi-directional many-to-one association to Order
 	@ManyToOne
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	@JoinColumn(name="order_id")
 	private Order order;
 
 	//bi-directional many-to-one association to Product
 	@ManyToOne
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	@JoinColumn(name="product_id")
 	private Product product;
 

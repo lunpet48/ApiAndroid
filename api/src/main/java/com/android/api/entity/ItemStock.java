@@ -4,6 +4,8 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * The persistent class for the item_stocks database table.
  * 
@@ -30,16 +32,19 @@ public class ItemStock implements Serializable {
 
 	// bi-directional many-to-one association to Color
 	@ManyToOne
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	@JoinColumn(name = "color_id")
 	private Color color;
 
 	// bi-directional many-to-one association to Product
 	@ManyToOne
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	@JoinColumn(name = "product_id")
 	private Product product;
 
 	// bi-directional many-to-one association to Size
 	@ManyToOne
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	@JoinColumn(name = "size_id")
 	private Size size;
 

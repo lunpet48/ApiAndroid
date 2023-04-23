@@ -1,11 +1,16 @@
 package com.android.api.service.serviceImpl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.android.api.entity.Cart;
 import com.android.api.entity.CartItem;
+import com.android.api.entity.Color;
+import com.android.api.entity.Product;
+import com.android.api.entity.Size;
 import com.android.api.repository.CartItemRepository;
 import com.android.api.service.CartItemService;
 import com.android.api.service.CartService;
@@ -31,16 +36,23 @@ public class CartItemServiceImpl implements CartItemService{
 
     @Override
     public CartItem addToCart(Long cartId, Long productId, Long colorId, Long sizeId, int amount) {
+        if(amount <= 0) return null;
         Optional<CartItem> temp = cartItemRepository.findCartItem(cartId, productId, colorId, sizeId);
         if(temp.isPresent()) {
             temp.get().setCount(temp.get().getCount() + amount);
             return cartItemRepository.save(temp.get());
         }
+        Cart cart = cartService.findById(cartId);
+        Product product = productService.findById(productId);
+        Color color = colorService.findById(colorId);
+        Size size = sizeService.findById(sizeId);
+        if(cart == null || product == null || color == null || size == null) return null;
+        cart.setCountUniqueItems(cart.getCountUniqueItems() + 1);
         CartItem cartItem = new CartItem();
-        cartItem.setCart(cartService.findById(cartId));
-        cartItem.setProduct(productService.findById(productId));
-        cartItem.setColor(colorService.findById(colorId));
-        cartItem.setSize(sizeService.findById(sizeId));
+        cartItem.setCart(cart);
+        cartItem.setProduct(product);
+        cartItem.setColor(color);
+        cartItem.setSize(size);
         cartItem.setCount(amount);
         return cartItemRepository.save(cartItem);
     }
@@ -48,6 +60,11 @@ public class CartItemServiceImpl implements CartItemService{
     @Override
     public CartItem findById(Long id) {
         return cartItemRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<CartItem> findByCartId(Long cartId) {
+        return cartItemRepository.findByCartId(cartId);
     }
     
 }

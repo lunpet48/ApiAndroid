@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * The persistent class for the reviews database table.
  * 
@@ -29,16 +31,19 @@ public class Review implements Serializable {
 
 	// bi-directional many-to-one association to Customer
 	@ManyToOne
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	@JoinColumn(name = "customer_id")
 	private Customer customer;
 
 	// bi-directional many-to-one association to Order
 	@ManyToOne
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	@JoinColumn(name = "order_id")
 	private Order order;
 
 	// bi-directional many-to-one association to Product
 	@ManyToOne
+	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	@JoinColumn(name = "product_id")
 	private Product product;
 

@@ -59,6 +59,8 @@ public class WebSecurityConfig {
                                 .requestMatchers("/auth/signup/**").permitAll()
                                 .requestMatchers("/customer/**").permitAll()
                                 .requestMatchers("/cart-item/**", "/cart-item/add-to-cart").permitAll()
+                                .requestMatchers("/cart/**").permitAll()
+                                .requestMatchers("/discount/**").permitAll()
                                 .requestMatchers("/admin").hasRole(Role.ROLE_ADMIN.name())
                                 .requestMatchers("/", "/search/**").permitAll()
                                 .anyRequest().authenticated().and().addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
