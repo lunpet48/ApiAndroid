@@ -3,6 +3,8 @@ package com.android.api.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -20,6 +22,7 @@ import jakarta.persistence.TemporalType;
 @Entity
 @Table(name = "categories")
 @NamedQuery(name = "Category.findAll", query = "SELECT c FROM Category c")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 public class Category implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -45,6 +48,7 @@ public class Category implements Serializable {
 
 	// bi-directional many-to-one association to Category
 	@ManyToOne
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 	@JoinColumn(name = "parent_id")
 	private Category category;
 

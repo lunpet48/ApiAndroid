@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * The persistent class for the size database table.
  * 
@@ -30,6 +32,7 @@ public class Size implements Serializable {
 
 	// bi-directional many-to-many association to Product
 	@ManyToMany
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 	@JoinTable(name = "size_product", joinColumns = {
 			@JoinColumn(name = "size_id")
 	}, inverseJoinColumns = {

@@ -9,7 +9,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -23,6 +22,7 @@ import jakarta.persistence.TemporalType;
 @Entity
 @Table(name = "customers")
 @NamedQuery(name = "Customer.findAll", query = "SELECT c FROM Customer c")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 public class Customer implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -57,6 +57,7 @@ public class Customer implements Serializable {
 	private Date updateAt;
 
 	@OneToOne
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 	@JoinColumn(name = "account_id")
 	private Account account;
 

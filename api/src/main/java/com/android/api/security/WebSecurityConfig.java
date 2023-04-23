@@ -43,7 +43,7 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.authorizeHttpRequests().requestMatchers("/login").permitAll();
+        http.authorizeHttpRequests().requestMatchers("/**").permitAll();
 
         // http.httpBasic(basic -> basic.authenticationEntryPoint(myBasicAuthenticationEntryPoint)).sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests()
         // .requestMatchers("/account", "/", "").hasRole("ADMIN").and()
@@ -58,7 +58,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/auth/login/**").permitAll()
                                 .requestMatchers("/auth/signup/**").permitAll()
                                 .requestMatchers("/customer/**").permitAll()
-                                .requestMatchers("/cart-item/**").permitAll()
+                                .requestMatchers("/cart-item/**", "/cart-item/add-to-cart").permitAll()
                                 .requestMatchers("/admin").hasRole(Role.ROLE_ADMIN.name())
                                 .requestMatchers("/", "/search/**").permitAll()
                                 .anyRequest().authenticated().and().addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -39,6 +41,7 @@ public class Color implements Serializable {
 
 	// bi-directional many-to-many association to Product
 	@ManyToMany
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 	@JoinTable(name = "color_product", joinColumns = {
 			@JoinColumn(name = "color_id")
 	}, inverseJoinColumns = {
