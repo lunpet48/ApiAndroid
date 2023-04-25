@@ -3,9 +3,12 @@ package com.android.api.security;
 import java.security.Key;
 import java.util.Date;
 
+import javax.crypto.SecretKey;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
+import com.android.api.repository.CustomerRepository;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -20,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtTokenProvider {
     //private final String JWT_SECRET = "theluantheluantheluantheluantheluantheluan";
+    @Autowired
+    CustomerRepository customerRepository;
 
     private final Long JWT_EXPIRATION = 604800000L;
 
@@ -37,6 +42,7 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                     .setSubject(Long.toString(accountDetails.getAccount().getAccountId()))
+                    .claim("customerId", Long.toString(customerRepository.findByAccount(accountDetails.getAccount()).get().getCustomerId()))
                     .setIssuedAt(now)
                     .setExpiration(expiryDate)
                     .signWith(getSigningKey(), SignatureAlgorithm.HS512)
@@ -53,14 +59,23 @@ public class JwtTokenProvider {
         return Long.parseLong(claims.getSubject());
     }
 
-    public String getUsernameFromJwt(String token) {
+    // public String getUsernameFromJwt(String token) {
+    //     Claims claims = Jwts.parserBuilder()
+    //                         .setSigningKey(getSigningKey())
+    //                         .build()
+    //                         .parseClaimsJws(token)
+    //                         .getBody();
+
+    //     return claims.getSubject();
+    // }
+
+    public Long getCustomerIdFromJwt(String token) {
         Claims claims = Jwts.parserBuilder()
                             .setSigningKey(getSigningKey())
                             .build()
                             .parseClaimsJws(token)
                             .getBody();
-
-        return claims.getSubject();
+        return Long.parseLong((String) claims.get("customerId"));
     }
 
     public boolean validateToken(String authToken) {
