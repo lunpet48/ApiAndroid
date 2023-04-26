@@ -43,7 +43,7 @@ public class LoginAPI {
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
         String jwt = accountService.login(loginDto.getUsername(), loginDto.getPassword());
-
+        
         return ResponseEntity.ok().body("Login successfully with jwt: " + jwt);
     }
 

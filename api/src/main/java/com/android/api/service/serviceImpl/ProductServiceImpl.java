@@ -1,5 +1,7 @@
 package com.android.api.service.serviceImpl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,5 +19,14 @@ public class ProductServiceImpl implements ProductService{
     public Product findById(Long id) {
         return productRepository.findById(id).orElse(null);
     }
-    
+
+    @Override
+    public List<Product> getAll() {
+        return productRepository.getAll();
+    }
+
+    @Override
+    public List<Product> getAllWithFilter(boolean isDeleted) {
+        return productRepository.getAllWithFilter(isDeleted);
+    }
 }
