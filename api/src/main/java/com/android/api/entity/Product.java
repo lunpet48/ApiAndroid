@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -63,7 +64,8 @@ public class Product implements Serializable {
 
 	// bi-directional many-to-many association to Color
 	@ManyToMany(mappedBy = "products")
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	//@JsonIgnore
 	private List<Color> colors;
 
 	// bi-directional many-to-one association to Category
@@ -74,7 +76,8 @@ public class Product implements Serializable {
 
 	// bi-directional many-to-many association to Size
 	@ManyToMany(mappedBy = "products")
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	//@JsonIgnore
 	private List<Size> sizes;
 
 	public Product() {

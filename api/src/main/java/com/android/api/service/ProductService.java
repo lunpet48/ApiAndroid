@@ -8,4 +8,5 @@ public interface ProductService {
     Product findById(Long id);
     List<Product> getAllWithFilter(boolean isDeleted);
     List<Product> getAll();
+    void save(Product product);
 }
