@@ -1,5 +1,7 @@
 package com.android.api.service.serviceImpl;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,20 @@ public class CustomerServiceImpl implements CustomerService {
     public void createCustomerAfterRegister(Customer customer, Account account) {
         customer.setAccount(account);
         customerRepository.save(customer);
+    }
+
+    @Override
+    public Optional<Customer> findById(Long id) {
+        return customerRepository.findById(id);
+    }
+
+    @Override
+    public Customer updateCustomerForCustomer(Customer customer, Customer newCustomer) {
+        customer.setAvatar(newCustomer.getAvatar());
+        customer.setFirstName(newCustomer.getFirstName());
+        customer.setLastName(newCustomer.getLastName());
+        customer.setPhone(newCustomer.getPhone());
+        return customerRepository.save(customer);
     }
     
 }
