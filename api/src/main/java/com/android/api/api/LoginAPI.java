@@ -44,7 +44,7 @@ public class LoginAPI {
     public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
         String jwt = accountService.login(loginDto.getUsername(), loginDto.getPassword());
         
-        return ResponseEntity.ok().body("Login successfully with jwt: " + jwt);
+        return ResponseEntity.ok().body(jwt);
     }
 
     @PostMapping("/signup")
