@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.android.api.entity.Account;
+import com.android.api.entity.Cart;
 import com.android.api.entity.Customer;
 import com.android.api.exception.CustomerNotFoundException;
 import com.android.api.repository.CustomerRepository;
+import com.android.api.service.CartService;
 import com.android.api.service.CustomerService;
 
 @Service
@@ -16,6 +18,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     CustomerRepository customerRepository;
+
+    @Autowired
+    CartService cartService;
 
     @Override
     public Customer findByEmail(String Email) {
@@ -32,6 +37,10 @@ public class CustomerServiceImpl implements CustomerService {
     public void createCustomerAfterRegister(Customer customer, Account account) {
         customer.setAccount(account);
         customerRepository.save(customer);
+        Customer temp = findByEmail(customer.getEmail());
+        Cart cart = new Cart();
+        cart.setCustomer(temp);
+        cartService.save(cart);
     }
 
     @Override
