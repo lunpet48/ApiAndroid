@@ -61,29 +61,25 @@ public class ProductAPI {
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(@RequestParam("product") String productJson,
             @RequestParam("cateId") Long cateId, @RequestParam("size") String sizeJson,
-            @RequestParam("color") String colorJson, @RequestParam("image") MultipartFile image) throws JsonMappingException, JsonProcessingException {
+            @RequestParam("color") String colorJson, @RequestParam("image") MultipartFile image)
+            throws JsonMappingException, JsonProcessingException {
 
         Category category = categoryService.findById(cateId).orElseThrow(() -> new CategoryNotFoundException(cateId));
-        
+
         Product product = new Gson().fromJson(productJson, Product.class);
-
-        product.setCategory(category);
         ObjectMapper m = new ObjectMapper();
-
-        List<Size> size = m.readValue(sizeJson, new TypeReference<List<Size>>() {});
-        product.setSizes(size);
-
-        List<Color> color = m.readValue(colorJson, new TypeReference<List<Color>>() {});
-  
-        product.setColors(color);
+        List<Size> size = m.readValue(sizeJson, new TypeReference<List<Size>>() {
+        });
+        List<Color> color = m.readValue(colorJson, new TypeReference<List<Color>>() {
+        });
         String uuid = UUID.randomUUID().toString();
         String path = storageService.getStorageFilename(image, uuid);
 
-        product.setImage(path);
-        storageService.store(image, product.getImage());
-        productService.save(product);
+        productService.createProduct(product, category, size, color, path);
 
-        return ResponseEntity.ok().body("OKOK");
+        // storageService.store(image, product.getImage());
+        storageService.store(image, path);
+        return ResponseEntity.ok().body("Product are created!!!");
     }
 
 }

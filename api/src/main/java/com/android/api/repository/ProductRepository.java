@@ -14,4 +14,6 @@ public interface ProductRepository extends CrudRepository<Product, Long>{
 
     @Query(value = "SELECT * FROM products", nativeQuery = true)
     List<Product> getAll();
+
+    Product findTopByOrderByProductIdDesc();
 }

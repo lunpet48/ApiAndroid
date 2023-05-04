@@ -83,7 +83,7 @@ public class LoginAPI {
         return ResponseEntity.status(200).body("Verify email successfully!!");
     }
 
-    @PostMapping("/forget-password")
+    @PostMapping(value = {"/forget-password", "/resend-opt"})
     public ResponseEntity<?> forgetPassword(@RequestParam("email") String email) throws Exception {
         Customer customer = customerService.findByEmail(email);
 
