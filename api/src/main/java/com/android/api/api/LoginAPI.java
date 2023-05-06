@@ -20,6 +20,7 @@ import com.android.api.security.JwtTokenProvider;
 import com.android.api.service.AccountService;
 import com.android.api.service.CustomerService;
 import com.android.api.utils.TokenUtils;
+import com.google.gson.Gson;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -43,7 +44,11 @@ public class LoginAPI {
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
         String jwt = accountService.login(loginDto.getUsername(), loginDto.getPassword());
-        
+
+        if(jwt.isEmpty()) {
+            return ResponseEntity.badRequest().body("Invalid username or password!!");
+        }
+
         return ResponseEntity.ok().body(jwt);
     }
 
@@ -61,9 +66,10 @@ public class LoginAPI {
     }
 
     @PostMapping(value = { "/signup/verify-email" })
-    public ResponseEntity<?> verifyEmail(@RequestParam("code") String code) throws Exception {
-        Account temp = (Account) session.getAttribute("account");
-        session.removeAttribute("account");
+    public ResponseEntity<?> verifyEmail(@RequestParam("code") String code, @RequestParam("account") String newAccount, @RequestParam("customer") String newCustomer)
+            throws Exception {
+
+        Account temp = new Gson().fromJson(newAccount, Account.class);
 
         String username = temp.getUsername();
 
@@ -73,8 +79,7 @@ public class LoginAPI {
         }
         Account account = accountService.findByUsername(username).get();
 
-        Customer customer = (Customer) session.getAttribute("customer");
-        session.removeAttribute("customer");
+        Customer customer = new Gson().fromJson(newCustomer, Customer.class);
         // customer.setAccount(account);
         // customerService.save(customer);
 
@@ -83,7 +88,7 @@ public class LoginAPI {
         return ResponseEntity.status(200).body("Verify email successfully!!");
     }
 
-    @PostMapping(value = {"/forget-password", "/resend-opt"})
+    @PostMapping(value = { "/forget-password", "/resend-opt" })
     public ResponseEntity<?> forgetPassword(@RequestParam("email") String email) throws Exception {
         Customer customer = customerService.findByEmail(email);
 
@@ -91,7 +96,7 @@ public class LoginAPI {
 
         accountService.generateOneTimePassword(account, email);
         accountService.save(account);
-        session.setAttribute("account", account);
+        //session.setAttribute("account", account);
 
         return ResponseEntity.ok().body("Please check your email!!!");
     }
