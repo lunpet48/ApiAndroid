@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import net.minidev.json.JSONObject;
 
 @RestController
 @RequestMapping("/auth")
@@ -62,7 +63,12 @@ public class LoginAPI {
         session.setAttribute("customer", customer);
         session.setAttribute("account", account);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(message);
+        JSONObject jo = new JSONObject();
+        jo.put("account", account);
+        jo.put("customer", customer);
+        jo.put("message", message);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(jo);
     }
 
     @PostMapping(value = { "/signup/verify-email" })
