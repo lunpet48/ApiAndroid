@@ -110,9 +110,11 @@ public class LoginAPI {
         return ResponseEntity.ok().body(jo);
     }
 
-    @PostMapping("/resend-opt")
+    @PostMapping("/resend-otp")
     public ResponseEntity<?> resendOTP(@RequestParam("email") String email, @RequestParam("account") String jsonAccount) throws Exception {
-        Account account = new Gson().fromJson(jsonAccount, Account.class);
+        Account tempAccount = new Gson().fromJson(jsonAccount, Account.class);
+
+        Account account = accountService.findByUsername(tempAccount.getUsername()).get();
 
         accountService.generateOneTimePassword(account, email);
         accountService.save(account);
