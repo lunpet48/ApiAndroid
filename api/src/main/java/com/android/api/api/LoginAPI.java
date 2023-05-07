@@ -94,7 +94,7 @@ public class LoginAPI {
         return ResponseEntity.status(200).body("Verify email successfully!!");
     }
 
-    @PostMapping(value = { "/forget-password", "/resend-opt" })
+    @PostMapping(value = { "/forget-password"})
     public ResponseEntity<?> forgetPassword(@RequestParam("email") String email) throws Exception {
         Customer customer = customerService.findByEmail(email);
 
@@ -110,12 +110,22 @@ public class LoginAPI {
         return ResponseEntity.ok().body(jo);
     }
 
+    @PostMapping("/resend-opt")
+    public ResponseEntity<?> resendOTP(@RequestParam("email") String email, @RequestParam("account") String jsonAccount) throws Exception {
+        Account account = new Gson().fromJson(jsonAccount, Account.class);
+
+        accountService.generateOneTimePassword(account, email);
+        accountService.save(account);
+
+        return ResponseEntity.ok().body("Please check your email!!!");
+    } 
+
     @PutMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestParam("reset-password") String jsonPasswordDto, @RequestParam("account") String jsonAccount ) {
         Account account = new Gson().fromJson(jsonAccount, Account.class);
 
         ResetPasswordDto passwordDto = new Gson().fromJson(jsonPasswordDto, ResetPasswordDto.class);
-        
+
         boolean result = accountService.resetPassword(account, passwordDto.getPassword(),
                 passwordDto.getRepeatPassword(), passwordDto.getCode());
         return result == true ? ResponseEntity.ok().body("Reset password successfully!!!")
