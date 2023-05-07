@@ -34,7 +34,7 @@ public class Account implements Serializable {
 	private Date createAt;
 
 	@Column(name = "hash_code")
-	@JsonIgnore
+	//@JsonIgnore
 	private String hashCode;
 
 	@Column(name = "is_active")
@@ -56,11 +56,11 @@ public class Account implements Serializable {
 	private static final long OTP_VALID_DURATION = 5 * 60 * 1000; // 5 minutes
 
 	@Column(name = "one_time_password")
-	@JsonIgnore
+	//@JsonIgnore
 	private String oneTimePassword;
 
 	@Column(name = "otp_requested_time")
-	@JsonIgnore
+	//@JsonIgnore
 	private Date otpRequestedTime;
 
 	public String getOneTimePassword() {
