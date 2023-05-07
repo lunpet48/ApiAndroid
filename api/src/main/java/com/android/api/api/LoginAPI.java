@@ -103,14 +103,19 @@ public class LoginAPI {
         accountService.generateOneTimePassword(account, email);
         accountService.save(account);
         //session.setAttribute("account", account);
+        JSONObject jo = new JSONObject();
+        jo.put("message", "Please check your email!!!");
+        jo.put("account", account);
 
-        return ResponseEntity.ok().body("Please check your email!!!");
+        return ResponseEntity.ok().body(jo);
     }
 
     @PutMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestBody ResetPasswordDto passwordDto) {
-        Account account = (Account) session.getAttribute("account");
-        // session.removeAttribute("account");
+    public ResponseEntity<?> resetPassword(@RequestParam("reset-password") String jsonPasswordDto, @RequestParam("account") String jsonAccount ) {
+        Account account = new Gson().fromJson(jsonAccount, Account.class);
+
+        ResetPasswordDto passwordDto = new Gson().fromJson(jsonPasswordDto, ResetPasswordDto.class);
+        
         boolean result = accountService.resetPassword(account, passwordDto.getPassword(),
                 passwordDto.getRepeatPassword(), passwordDto.getCode());
         return result == true ? ResponseEntity.ok().body("Reset password successfully!!!")

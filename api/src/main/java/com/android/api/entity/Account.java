@@ -3,6 +3,8 @@ package com.android.api.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -32,6 +34,7 @@ public class Account implements Serializable {
 	private Date createAt;
 
 	@Column(name = "hash_code")
+	@JsonIgnore
 	private String hashCode;
 
 	@Column(name = "is_active")
@@ -53,9 +56,11 @@ public class Account implements Serializable {
 	private static final long OTP_VALID_DURATION = 5 * 60 * 1000; // 5 minutes
 
 	@Column(name = "one_time_password")
+	@JsonIgnore
 	private String oneTimePassword;
 
 	@Column(name = "otp_requested_time")
+	@JsonIgnore
 	private Date otpRequestedTime;
 
 	public String getOneTimePassword() {
