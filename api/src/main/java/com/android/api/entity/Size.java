@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
@@ -32,12 +33,13 @@ public class Size implements Serializable {
 
 	// bi-directional many-to-many association to Product
 	@ManyToMany
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
+	//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) 
 	@JoinTable(name = "size_product", joinColumns = {
 			@JoinColumn(name = "size_id")
 	}, inverseJoinColumns = {
 			@JoinColumn(name = "product_id")
 	})
+	@JsonBackReference
 	private List<Product> products;
 
 	public Size() {
