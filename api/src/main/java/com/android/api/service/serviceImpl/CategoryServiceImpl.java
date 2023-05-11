@@ -25,5 +25,15 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> getAll() {
         return categoryRepository.getAll();
     }
+
+    @Override
+    public List<Category> getChild(Long parentId) {
+        return categoryRepository.getChild(parentId);
+    }
+
+    @Override
+    public List<Category> getRoot() {
+        return categoryRepository.getRoot();
+    }
     
 }

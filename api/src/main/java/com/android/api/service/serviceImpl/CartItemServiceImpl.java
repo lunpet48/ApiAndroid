@@ -12,6 +12,7 @@ import com.android.api.entity.Color;
 import com.android.api.entity.Product;
 import com.android.api.entity.Size;
 import com.android.api.repository.CartItemRepository;
+import com.android.api.repository.CartRepository;
 import com.android.api.service.CartItemService;
 import com.android.api.service.CartService;
 import com.android.api.service.ColorService;
@@ -31,7 +32,8 @@ public class CartItemServiceImpl implements CartItemService{
     private ColorService colorService;
     @Autowired
     private SizeService sizeService;
-
+    @Autowired
+    private CartRepository cartRepository;
 
 
     @Override
@@ -54,6 +56,7 @@ public class CartItemServiceImpl implements CartItemService{
         cartItem.setColor(color);
         cartItem.setSize(size);
         cartItem.setCount(amount);
+        cartRepository.save(cart);
         return cartItemRepository.save(cartItem);
     }
 
@@ -65,6 +68,14 @@ public class CartItemServiceImpl implements CartItemService{
     @Override
     public List<CartItem> findByCartId(Long cartId) {
         return cartItemRepository.findByCartId(cartId);
+    }
+
+    @Override
+    public void removeFromCart(CartItem cartItem) {
+        Cart cart = cartItem.getCart();
+        cartItemRepository.delete(cartItem);
+        cart.setCountUniqueItems(cart.getCountUniqueItems() - 1);
+        cartRepository.save(cart);
     }
     
 }

@@ -8,4 +8,6 @@ import com.android.api.entity.Category;
 public interface CategoryService {
     Optional<Category> findById(Long id);
     List<Category> getAll();
+    List<Category> getChild(Long parent_id);
+    List<Category> getRoot();
 }
