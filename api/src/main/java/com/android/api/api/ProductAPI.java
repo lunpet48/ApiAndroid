@@ -100,4 +100,8 @@ public class ProductAPI {
         return ResponseEntity.ok().body(productService.searchProducts(name));
     }
 
+    @GetMapping("/get-by-category")
+    public ResponseEntity<?> searchProducts(@RequestParam Long categoryId) {
+        return ResponseEntity.ok().body(productService.getByCategory(categoryId));
+    }
 }

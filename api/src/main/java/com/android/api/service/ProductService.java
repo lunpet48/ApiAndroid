@@ -14,4 +14,5 @@ public interface ProductService {
     void save(Product product);
     void createProduct(Product product ,Category category, List<Size> size, List<Color> color, String path);
     List<Product> searchProducts(String name);
+    List<Product> getByCategory(Long categoryId);
 }

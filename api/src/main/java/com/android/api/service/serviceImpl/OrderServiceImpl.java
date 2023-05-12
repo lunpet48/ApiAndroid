@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.android.api.entity.CartItem;
+import com.android.api.entity.ItemStock;
 import com.android.api.entity.Order;
+import com.android.api.repository.ItemStockRepository;
 import com.android.api.repository.OrderRepository;
 import com.android.api.service.CartItemService;
 import com.android.api.service.CustomerService;
@@ -30,6 +32,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderItemService orderItemService;
 
+    @Autowired
+    ItemStockRepository itemStockRepository;
+
     @Override
     public Order create(String address, String description, String notification, List<CartItem> cartItems, Long customerId) {
         Order order = new Order();
@@ -50,6 +55,9 @@ public class OrderServiceImpl implements OrderService {
         order.setTotalPrice(total);
         order = orderRepository.save(order);
         for (CartItem cartItem : listCartItem) {
+            ItemStock itemStock = itemStockRepository.get(cartItem.getProduct().getProductId(), cartItem.getColor().getColorId(), cartItem.getSize().getSizeId());
+            itemStock.setCount(itemStock.getCount() - cartItem.getCount());
+            itemStockRepository.save(itemStock);
             cartItemService.removeFromCart(cartItem);
         }
         orderItemService.create(listCartItem, order);
