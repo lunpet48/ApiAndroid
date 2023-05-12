@@ -13,4 +13,5 @@ public interface ProductService {
     List<Product> getAll();
     void save(Product product);
     void createProduct(Product product ,Category category, List<Size> size, List<Color> color, String path);
+    List<Product> searchProducts(String name);
 }

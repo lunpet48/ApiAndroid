@@ -75,4 +75,9 @@ public class ProductServiceImpl implements ProductService {
             colorRepository.save(tempColor);
         }
     }
+
+    @Override
+    public List<Product> searchProducts(String name) {
+        return productRepository.findByProductName(name); 
+    }
 }

@@ -16,4 +16,7 @@ public interface ProductRepository extends CrudRepository<Product, Long>{
     List<Product> getAll();
 
     Product findTopByOrderByProductIdDesc();
+
+    @Query(value = "SELECT * from products p WHERE p.product_name like %?1%", nativeQuery = true)
+    List<Product> findByProductName(String productName);
 }

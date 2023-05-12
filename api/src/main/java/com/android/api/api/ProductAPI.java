@@ -95,4 +95,9 @@ public class ProductAPI {
 				.body(file);
 	}
 
+    @GetMapping("/search")
+    public ResponseEntity<?> searchProducts(@RequestParam("name") String name) {
+        return ResponseEntity.ok().body(productService.searchProducts(name));
+    }
+
 }
