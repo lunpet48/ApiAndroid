@@ -48,7 +48,12 @@ public class CartItemAPI {
     }
 
     @GetMapping("/get")
-    ResponseEntity<?> findByCartId(@RequestParam Long cartId) {
+    ResponseEntity<?> findByCartId(HttpServletRequest request) {
+        String token = TokenUtils.getToken(request);
+
+        Long customerId = provider.getCustomerIdFromJwt(token);
+
+        Long cartId = cartService.findByCustomerId(customerId).getCartId();
         return ResponseEntity.ok().body(cartItemService.findByCartId(cartId));
     }
 }
