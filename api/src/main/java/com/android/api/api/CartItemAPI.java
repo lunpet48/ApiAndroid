@@ -4,12 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.android.api.entity.CartItem;
 import com.android.api.entity.Customer;
+import com.android.api.repository.CartItemRepository;
 import com.android.api.security.JwtTokenProvider;
 import com.android.api.service.CartItemService;
 import com.android.api.service.CartService;
@@ -26,6 +29,9 @@ public class CartItemAPI {
 
     @Autowired
     private CartService cartService;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
 
     @Autowired
     HttpSession session;
@@ -55,5 +61,10 @@ public class CartItemAPI {
 
         Long cartId = cartService.findByCustomerId(customerId).getCartId();
         return ResponseEntity.ok().body(cartItemService.findByCartId(cartId));
+    }
+
+    @PutMapping("/update")
+    ResponseEntity<?> update(@RequestBody CartItem cartItem) {
+        return ResponseEntity.ok().body(cartItemRepository.save(cartItem));
     }
 }
