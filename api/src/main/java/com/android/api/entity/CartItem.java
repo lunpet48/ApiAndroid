@@ -4,6 +4,7 @@ import java.io.Serializable;
 import jakarta.persistence.*;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
@@ -24,6 +25,7 @@ public class CartItem implements Serializable {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "create_at")
+	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
 	private Date createAt;
 
 	@Column(name = "is_deleted")
@@ -31,6 +33,7 @@ public class CartItem implements Serializable {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "update_at")
+	@JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
 	private Date updateAt;
 
 	// bi-directional many-to-one association to Cart
