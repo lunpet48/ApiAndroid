@@ -101,7 +101,7 @@ notification varchar(255) null, -- nêu lý do đơn hàng bị hủy và thông
     primary key (order_id)
     --
     -- Status work-flow: 'Chờ xác nhận' --> 'Chờ đóng gói' --------------------- 
-	--                         |                    |                          |
+    --                         |                    |                          |
     --                         |                    V           No             V
     --                         |            'Yêu cầu hủy đơn' -------> 'Đã đóng gói' ---> 'Đang vận chuyển' --> 'Đã giao hàng'
     --                         |                    | Yes

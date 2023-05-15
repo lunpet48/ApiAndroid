@@ -16,6 +16,7 @@ import com.android.api.service.CartItemService;
 import com.android.api.service.CustomerService;
 import com.android.api.service.OrderItemService;
 import com.android.api.service.OrderService;
+import com.android.api.utils.Status;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -42,6 +43,7 @@ public class OrderServiceImpl implements OrderService {
         order.setDescription(description);
         order.setNotification(notification);
         order.setCustomer(customerService.findById(customerId).get());
+        order.setStatus(Status.CHO_XAC_NHAN);
         BigDecimal total = BigDecimal.ZERO;
         BigDecimal cartItemCost = BigDecimal.ZERO;
         List<CartItem> listCartItem = new ArrayList<>();
@@ -62,6 +64,19 @@ public class OrderServiceImpl implements OrderService {
         }
         orderItemService.create(listCartItem, order);
         return order;
+    }
+
+    @Override
+    public List<Order> getOrderByStatus(String status) {
+        return orderRepository.getOrderByStatus(status);
+    }
+
+    @Override
+    public void updateStatus(Long orderId, String status) {
+        Order order = orderRepository.findById(orderId).get();
+
+        order.setStatus(status);
+        orderRepository.save(order);
     }
     
 }
