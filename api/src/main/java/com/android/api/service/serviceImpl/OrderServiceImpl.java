@@ -78,5 +78,12 @@ public class OrderServiceImpl implements OrderService {
         order.setStatus(status);
         orderRepository.save(order);
     }
+
+    @Override
+    public List<Order> getByCustomerId(Long customerId) {
+        return orderRepository.findByCustomerId(customerId);
+    }
+
+    
     
 }

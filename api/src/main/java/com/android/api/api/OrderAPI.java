@@ -19,6 +19,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 @RestController
 @RequestMapping("/order")
@@ -40,4 +42,12 @@ public class OrderAPI {
         System.out.println(customerId);
         return ResponseEntity.ok().body(orderService.create(address, description, notification, cartItems, customerId));
     }
+
+    @GetMapping("/get")
+    public ResponseEntity<?> getByCustomerId(HttpServletRequest request) {
+        String token = TokenUtils.getToken(request);
+        Long customerId = provider.getCustomerIdFromJwt(token);
+        return ResponseEntity.ok().body(orderService.getByCustomerId(customerId));
+    }
+    
 }

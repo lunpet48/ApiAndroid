@@ -33,5 +33,10 @@ public class OrderItemServiceImpl implements OrderItemService {
             orderItemRepository.save(orderItem);
         }
     }
+
+    @Override
+    public List<OrderItem> getByOrderId(Long orderId) {
+        return orderItemRepository.getByOrderId(orderId);
+    }
     
 }

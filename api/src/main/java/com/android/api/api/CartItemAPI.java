@@ -2,6 +2,7 @@ package com.android.api.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -66,5 +67,11 @@ public class CartItemAPI {
     @PutMapping("/update")
     ResponseEntity<?> update(@RequestBody CartItem cartItem) {
         return ResponseEntity.ok().body(cartItemRepository.save(cartItem));
+    }
+
+    @DeleteMapping("/remove-from-cart")
+    ResponseEntity<?> removeFromCart(@RequestBody CartItem cartItem) {
+        cartItemService.removeFromCart(cartItem);
+        return ResponseEntity.ok().body("Xóa sản phẩm khỏi giỏ hàng thành công!");
     }
 }
