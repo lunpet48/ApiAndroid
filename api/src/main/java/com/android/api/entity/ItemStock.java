@@ -18,6 +18,7 @@ public class ItemStock implements Serializable {
 
 	@Id
 	@Column(name = "item_stock_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long itemStockId;
 
 	private int count;
