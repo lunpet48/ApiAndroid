@@ -318,3 +318,9 @@ add constraint fk_cart_items_color_id
 foreign key (color_id) references color(color_id);
 
 -- -- End Relationshipalter table customers  add constraint fk_customers_account_id     foreign key (account_id)     references account(account_id)
+
+
+---------------------------------------------------------------------------------------------------------
+-- add auto increment for item stocks
+ALTER TABLE item_stocks
+CHANGE COLUMN `item_stock_id` `item_stock_id` bigint NOT NULL AUTO_INCREMENT ;
