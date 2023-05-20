@@ -1,5 +1,6 @@
 package com.android.api.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.android.api.entity.CartItem;
@@ -10,4 +11,6 @@ public interface OrderService {
     List<Order> getOrderByStatus(String status);
     void updateStatus(Long orderId, String status);
     List<Order> getByCustomerId(Long customerId);
+    BigDecimal calTotalRevenue();
+    Long countOrders();
 }

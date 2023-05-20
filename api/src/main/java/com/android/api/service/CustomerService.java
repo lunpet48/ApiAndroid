@@ -11,4 +11,5 @@ public interface CustomerService {
     void createCustomerAfterRegister(Customer customer, Account account);
     Optional<Customer> findById(Long id);
     Customer updateCustomerForCustomer(Customer customer, Customer newCustomer);
+    Long countCustomer();
 }

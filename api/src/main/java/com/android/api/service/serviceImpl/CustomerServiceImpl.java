@@ -56,5 +56,10 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setPhone(newCustomer.getPhone());
         return customerRepository.save(customer);
     }
+
+    @Override
+    public Long countCustomer() {
+        return customerRepository.countCustomer();
+    }
     
 }

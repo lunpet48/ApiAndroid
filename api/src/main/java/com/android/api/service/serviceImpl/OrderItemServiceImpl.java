@@ -38,5 +38,10 @@ public class OrderItemServiceImpl implements OrderItemService {
     public List<OrderItem> getByOrderId(Long orderId) {
         return orderItemRepository.getByOrderId(orderId);
     }
+
+    @Override
+    public Long getProductQuantitiesSold(Long productId) {
+        return orderItemRepository.getProductQuantitiesSold(productId);
+    }
     
 }

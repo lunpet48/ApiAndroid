@@ -84,6 +84,16 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findByCustomerId(customerId);
     }
 
+    @Override
+    public BigDecimal calTotalRevenue() {
+        return orderRepository.calTotalRevenue().orElse(BigDecimal.ZERO);
+    }
+
+    @Override
+    public Long countOrders() {
+        return orderRepository.countOrder();
+    }
+
     
     
 }
