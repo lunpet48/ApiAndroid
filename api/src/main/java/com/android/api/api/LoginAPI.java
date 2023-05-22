@@ -3,7 +3,6 @@ package com.android.api.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,10 +18,8 @@ import com.android.api.entity.Customer;
 import com.android.api.security.JwtTokenProvider;
 import com.android.api.service.AccountService;
 import com.android.api.service.CustomerService;
-import com.android.api.utils.TokenUtils;
 import com.google.gson.Gson;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import net.minidev.json.JSONObject;
 
@@ -42,16 +39,29 @@ public class LoginAPI {
     @Autowired
     HttpSession session;
 
+    /*
+     * Sử dụng LoginDto để tạo nhận thông tin người dùng nhập vào
+     * Gói tin sẽ qua JWT filter mà nhóm đã xây dựng sẵn để đăng nhập và token sẽ
+     * được trả về với khoảng thời gian 1 tuần
+     *
+     */
+
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
         String jwt = accountService.login(loginDto.getUsername(), loginDto.getPassword());
 
-        if(jwt.isEmpty()) {
+        if (jwt.isEmpty()) {
             return ResponseEntity.badRequest().body("Invalid username or password!!");
         }
 
         return ResponseEntity.ok().body(jwt);
     }
+
+    /*
+     * Sử dụng SignUpDto để nhận thông tin người dùng nhập vào
+     * Sau đó tạo tài khoản cho khách hàng và gửi mail xác thực
+     * cho tài khoản này và trả về đối tượng JSON
+     */
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@RequestBody SignUpDto signUpDto) throws Exception {
@@ -71,8 +81,14 @@ public class LoginAPI {
         return ResponseEntity.status(HttpStatus.CREATED).body(jo);
     }
 
+    /*
+     * Sau khi gửi email xác thực thì người dùng sẽ sử dụng đoạn mã xác thực (thời
+     * gian hiệu lực là 5 phút) để xác thực tài khoản
+     */
+
     @PostMapping(value = { "/signup/verify-email" })
-    public ResponseEntity<?> verifyEmail(@RequestParam("code") String code, @RequestParam("account") String newAccount, @RequestParam("customer") String newCustomer)
+    public ResponseEntity<?> verifyEmail(@RequestParam("code") String code, @RequestParam("account") String newAccount,
+            @RequestParam("customer") String newCustomer)
             throws Exception {
 
         Account temp = new Gson().fromJson(newAccount, Account.class);
@@ -94,7 +110,13 @@ public class LoginAPI {
         return ResponseEntity.status(200).body("Verify email successfully!!");
     }
 
-    @PostMapping(value = { "/forget-password"})
+    /*
+     * Chức năng quên mật khẩu
+     * Người dùng sẽ nhập email và sau đó sẽ tìm tài khoản có email trùng email đã
+     * nhập và sau đó sẽ gửi email xác thực cho email đó
+     */
+
+    @PostMapping(value = { "/forget-password" })
     public ResponseEntity<?> forgetPassword(@RequestParam("email") String email) throws Exception {
         Customer customer = customerService.findByEmail(email);
 
@@ -102,7 +124,7 @@ public class LoginAPI {
 
         accountService.generateOneTimePassword(account, email);
         accountService.save(account);
-        //session.setAttribute("account", account);
+        // session.setAttribute("account", account);
         JSONObject jo = new JSONObject();
         jo.put("message", "Please check your email!!!");
         jo.put("account", account);
@@ -110,8 +132,12 @@ public class LoginAPI {
         return ResponseEntity.ok().body(jo);
     }
 
+    /*
+     * Chức năng gửi lại OTP cho tài khoản
+     */
     @PostMapping("/resend-otp")
-    public ResponseEntity<?> resendOTP(@RequestParam("email") String email, @RequestParam("account") String jsonAccount) throws Exception {
+    public ResponseEntity<?> resendOTP(@RequestParam("email") String email, @RequestParam("account") String jsonAccount)
+            throws Exception {
         Account tempAccount = new Gson().fromJson(jsonAccount, Account.class);
 
         Account account = accountService.findByUsername(tempAccount.getUsername()).get();
@@ -120,10 +146,15 @@ public class LoginAPI {
         accountService.save(account);
 
         return ResponseEntity.ok().body("Please check your email!!!");
-    } 
+    }
 
+    /*
+     * Chức năng đặt lại mật khẩu
+     * Sau khi quên mật khẩu và xác thực email xong thì sẽ tới bước đặt lại mật khẩu
+     */
     @PutMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestParam("reset-password") String jsonPasswordDto, @RequestParam("account") String jsonAccount ) {
+    public ResponseEntity<?> resetPassword(@RequestParam("reset-password") String jsonPasswordDto,
+            @RequestParam("account") String jsonAccount) {
         Account account = new Gson().fromJson(jsonAccount, Account.class);
 
         ResetPasswordDto passwordDto = new Gson().fromJson(jsonPasswordDto, ResetPasswordDto.class);
@@ -132,14 +163,5 @@ public class LoginAPI {
                 passwordDto.getRepeatPassword(), passwordDto.getCode());
         return result == true ? ResponseEntity.ok().body("Reset password successfully!!!")
                 : ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Fail! Something get wrong!?");
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<?> test(HttpServletRequest request) {
-        String token = TokenUtils.getToken(request);
-
-        Long customerId = provider.getCustomerIdFromJwt(token);
-
-        return ResponseEntity.ok().body("Customer Id: " + customerId);
     }
 }

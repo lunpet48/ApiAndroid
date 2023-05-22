@@ -16,11 +16,18 @@ public class AdminOrderAPI {
     @Autowired
     OrderService orderService;
 
+    /*
+     * Lấy đơn hàng theo trạng thái như đang vận chuyển, chờ xác nhận,... 
+     */
     @GetMapping
     public ResponseEntity<?> getOrderByStatus(@RequestParam("status") String status) {
         return ResponseEntity.ok().body(orderService.getOrderByStatus(status));
     }
 
+
+    /*
+     * Cập nhật trạng trái của đơn hàng 
+     */
     @PutMapping("status")
     public ResponseEntity<?> updateStatus(@RequestParam("orderId") Long orderId,
             @RequestParam("update") String status) {

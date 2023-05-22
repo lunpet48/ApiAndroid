@@ -42,26 +42,41 @@ public class ProductAPI {
     @Autowired
     private CategoryService categoryService;
 
+    /*
+     * Lấy tất cả sản phẩm và bỏ qua các sản phẩm đã bị xóa
+     */
     @GetMapping("/get")
     ResponseEntity<?> getAllExcludeDeleted() {
         return ResponseEntity.ok().body(productService.getAllWithFilter(false));
     }
 
+    /*
+     * Lấy tất cả sản phẩm đã bị xóa
+     */
     @GetMapping("/get-include-deleted")
     ResponseEntity<?> getIncludeDeleted() {
         return ResponseEntity.ok().body(productService.getAllWithFilter(true));
     }
 
+    /*
+     * Lấy tất cả sản phẩm kể cả đã bị xóa
+     */
     @GetMapping("/get-all")
     ResponseEntity<?> getAll() {
         return ResponseEntity.ok().body(productService.getAll());
     }
 
+    /*
+     * Lấy chi tiết của sản phẩm với đầu vào là mã số sản phẩm
+     */
     @GetMapping("/get-detail")
     ResponseEntity<?> getByProductId(@RequestParam Long productId) {
         return ResponseEntity.ok().body(productService.findById(productId));
     }
 
+    /*
+     * Tạo sản phẩm với các param như cateId, product, color, size và hình ảnh
+     */
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(@RequestParam("product") String productJson,
             @RequestParam("cateId") Long cateId, @RequestParam("size") String sizeJson,
@@ -87,13 +102,13 @@ public class ProductAPI {
     }
 
     @GetMapping("images/{filename:.+}")
-	@ResponseBody
-	public ResponseEntity<Resource> serverFile(@PathVariable String filename) {
-		Resource file = storageService.loadAsResource(filename);
-		return ResponseEntity.ok()
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + file.getFilename() + "\"")
-				.body(file);
-	}
+    @ResponseBody
+    public ResponseEntity<Resource> serverFile(@PathVariable String filename) {
+        Resource file = storageService.loadAsResource(filename);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + file.getFilename() + "\"")
+                .body(file);
+    }
 
     @GetMapping("/search")
     public ResponseEntity<?> searchProducts(@RequestParam("name") String name) {

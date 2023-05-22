@@ -37,6 +37,9 @@ public class AdminProductAPI {
     @Autowired
     CategoryService categoryService;
 
+    /*
+     * Tạo sản phẩm với các param như cateId, product, color, size và hình ảnh  
+     */
     @PostMapping("/create")
     public ResponseEntity<?> createProduct(@RequestParam("product") String productJson,
             @RequestParam("cateId") Long cateId, @RequestParam("size") String sizeJson,
