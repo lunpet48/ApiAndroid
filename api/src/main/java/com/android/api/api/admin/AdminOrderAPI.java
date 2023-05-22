@@ -34,4 +34,12 @@ public class AdminOrderAPI {
         orderService.updateStatus(orderId, status);
         return ResponseEntity.ok().body("Update successfully!!");
     }
+    
+    /*
+     * Lấy tất cả đơn hàng
+     */
+    @GetMapping("/get-all")
+    public ResponseEntity<?> getAllOrder() {
+        return ResponseEntity.ok().body(orderService.findAll());
+    }
 }

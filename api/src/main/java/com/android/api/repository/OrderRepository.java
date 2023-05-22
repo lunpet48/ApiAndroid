@@ -20,4 +20,6 @@ public interface OrderRepository extends JpaRepository<Order, Long>{
 
     @Query(value = "SELECT count(*) FROM orders", nativeQuery = true)
     Long countOrder();
+
+    List<Order> findAll();
 }

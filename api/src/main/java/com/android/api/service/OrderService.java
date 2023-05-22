@@ -13,4 +13,5 @@ public interface OrderService {
     List<Order> getByCustomerId(Long customerId);
     BigDecimal calTotalRevenue();
     Long countOrders();
+    List<Order> findAll();
 }

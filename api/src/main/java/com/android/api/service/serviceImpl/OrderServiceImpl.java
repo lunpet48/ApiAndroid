@@ -94,6 +94,11 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.countOrder();
     }
 
+    @Override
+    public List<Order> findAll() {
+        return orderRepository.findAll();
+    }
+
     
     
 }
