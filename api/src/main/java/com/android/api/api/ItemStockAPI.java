@@ -16,6 +16,9 @@ public class ItemStockAPI {
     @Autowired
     private ItemStockService itemStockService;
 
+    /*
+     * API lấy ItemStock với các RequestParam productId, colorId, sizeId
+     */
     @GetMapping("/get")
     ResponseEntity<?> get(@RequestParam Long productId, @RequestParam Long colorId, @RequestParam Long sizeId) {
         return ResponseEntity.ok().body(itemStockService.get(productId, colorId, sizeId));

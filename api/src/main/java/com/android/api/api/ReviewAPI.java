@@ -31,11 +31,22 @@ public class ReviewAPI {
     @Autowired
     JwtTokenProvider provider;
 
+    /*
+     * API lấy tất cả Review của một Product bằng productId
+     */
     @GetMapping("/get")
     ResponseEntity<?> getAll(@RequestParam Long productId) {
         return ResponseEntity.ok().body(reviewService.get(productId));
     }
+    
 
+    /*
+     * API tạo Review, khi Customer nhận được Order thì sẽ cho người dùng tạo Review với những
+     * sản phẩm có trong Order đó.
+     * Sử dụng JWT để lấy customerId, sau đó dùng customerId để tìm ra Customer
+     * Sử dụng ReviewDTO để chuyển đổi dữ liệu từ Customer sang Review
+     * Sử dụng ReviewService để tạo Review
+     */
     @PostMapping("/create")
     ResponseEntity<?> create(HttpServletRequest request, @RequestBody ReviewDto reviewDto) {
         String token = TokenUtils.getToken(request);

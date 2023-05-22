@@ -20,16 +20,25 @@ public class CategoryAPI {
     @Autowired
     private CategoryService categoryService;
 
+    /*
+     * API dùng để lấy tất cả Category
+     */
     @GetMapping("/get")
     ResponseEntity<?> getAll() {
         return ResponseEntity.ok().body(categoryService.getAll());
     }
 
+    /*
+     * API dùng để lấy List<Category> gồm những Category không có parent
+     */
     @GetMapping("/get-root")
     ResponseEntity<?> getRoot() {
         return ResponseEntity.ok().body(categoryService.getRoot());
     }
 
+    /*
+     * API dùng để lấy List<Category> gồm những Category là con của Category với id là parentId
+     */
     @GetMapping("/get-child")
     ResponseEntity<?> getChild(@RequestParam Long parentId) {
         return ResponseEntity.ok().body(categoryService.getChild(parentId));

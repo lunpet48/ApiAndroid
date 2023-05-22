@@ -26,6 +26,7 @@ public class AdminStatAPI {
 
     /*
      * return BigDecimal
+     * API dùng để lấy tổng doanh thu
      */
     @GetMapping("/total-revenue")
     ResponseEntity<?> getTotalRevenue() {
@@ -34,6 +35,7 @@ public class AdminStatAPI {
 
     /*
      * return Long
+     *  API dùng để đếm số lượng Order
      */
     @GetMapping("/count-order")
     ResponseEntity<?> getCountOrders() {
@@ -42,6 +44,7 @@ public class AdminStatAPI {
 
     /*
      * return Long
+     * API dùng để đếm số lượng Customer
      */
     @GetMapping("/count-customer")
     ResponseEntity<?> getCountCustomers() {
@@ -50,6 +53,7 @@ public class AdminStatAPI {
 
     /*
      * return Long
+     * API dùng để lấy số lượng sản phẩm đã bán của Product với RequestParam là productId
      */
     @GetMapping("/quantities-sold")
     ResponseEntity<?> getProductQuantitiesSold(@RequestParam Long productId) {

@@ -15,6 +15,9 @@ public class CartAPI {
     @Autowired
     private CartService cartService;
 
+    /*
+     * API dùng để tìm giỏ hàng của Customer thông qua customerId
+     */
     @GetMapping("/get-by-customerId")
     ResponseEntity<?> findByCustomerId(@RequestParam Long customerId) {
         return ResponseEntity.ok().body(cartService.findByCustomerId(customerId));

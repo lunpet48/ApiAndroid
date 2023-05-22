@@ -40,6 +40,11 @@ public class CartItemAPI {
     @Autowired
     JwtTokenProvider provider;
 
+    /*
+     * API dùng để thêm sản phầm vào giỏ hàng
+     * Dùng JWT để lấy customerId , sau đó sử dụng customerId để tìm cartId của Customer
+     * Dùng cartItemService để thêm sản phầm vào giỏ hàng với các tham số như cartId, product Id, colorId, sizeId, amount
+     */
     @PostMapping("/add-to-cart")
     ResponseEntity<?> addToCart(HttpServletRequest request, @RequestParam Long productId, @RequestParam Long colorId, @RequestParam Long sizeId, @RequestParam Long amount) {
         String token = TokenUtils.getToken(request);
@@ -54,6 +59,12 @@ public class CartItemAPI {
         return ResponseEntity.ok().body(cartItem);
     }
 
+    /*
+     * API dùng để lấy List<CartItem> của Customer
+     * Dùng JWT để lấy customerId
+     * Dùng cartService để tìm cartId với customerId
+     * Dùng cartItemService để tìm Cart của Customer với cartId
+     */
     @GetMapping("/get")
     ResponseEntity<?> findByCartId(HttpServletRequest request) {
         String token = TokenUtils.getToken(request);
@@ -64,11 +75,18 @@ public class CartItemAPI {
         return ResponseEntity.ok().body(cartItemService.findByCartId(cartId));
     }
 
+
+    /*
+     * API dùng để cập nhật một CartItem của Customer
+     */
     @PutMapping("/update")
     ResponseEntity<?> update(@RequestBody CartItem cartItem) {
         return ResponseEntity.ok().body(cartItemRepository.save(cartItem));
     }
 
+    /*
+     * API dùng để xóa sản phẩm khỏi giỏ hàng
+     */
     @DeleteMapping("/remove-from-cart")
     ResponseEntity<?> removeFromCart(@RequestBody CartItem cartItem) {
         cartItemService.removeFromCart(cartItem);

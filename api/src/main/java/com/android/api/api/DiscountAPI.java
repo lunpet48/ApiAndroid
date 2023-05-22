@@ -19,11 +19,17 @@ public class DiscountAPI {
     @Autowired
     private DiscountService discountService;
 
+    /*
+     * API tạo discount
+     */
     @PostMapping("/create")
     ResponseEntity<?> create(@RequestBody Discount discount) {
         return ResponseEntity.status(HttpStatus.CREATED).body(discountService.create(discount));
     }
 
+    /*
+     * API dùng để lấy List<Discount> cho một Product bằng productId
+     */
     @GetMapping("/get-by-productId")
     ResponseEntity<?> getByProductId(@RequestParam Long productId) {
         return ResponseEntity.ok().body(discountService.findByProductId(productId));

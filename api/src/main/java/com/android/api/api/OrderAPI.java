@@ -32,6 +32,14 @@ public class OrderAPI {
     @Autowired
     JwtTokenProvider provider;
 
+
+    /*
+     * API tạo Order của người dùng khi bấm thanh toán
+     * Người dùng nhập thông tin của Order vào các trường như 'address', 'description', 'notification'
+     * Danh sách cartItem được chọn của Customer sẽ được truyền tải dưới dạng RequestParam và dùng ObjectMapper để chuyển đổi chuỗi Json cartIemJson sang List<CartItem>
+     * Sử dụng JWT để lấy customerId
+     * Sử dụng orderService để tạo Order
+     */
     @PostMapping("/create")
     ResponseEntity<?> create(HttpServletRequest request, @RequestParam String address, @RequestParam String description, @RequestParam String notification, @RequestParam("cartitem") String cartItemJson) throws JsonMappingException, JsonProcessingException {
         ObjectMapper m = new ObjectMapper();

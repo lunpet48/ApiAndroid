@@ -19,6 +19,9 @@ public class OrderItemAPI {
     @Autowired
     private OrderItemService orderItemService;
 
+    /*
+     * API lấy tất cả OrderItem của một Order bằng orderId
+     */
     @GetMapping("/get")
     ResponseEntity<?> getByOrder(@RequestParam Long orderId) {
         return ResponseEntity.ok().body(orderItemService.getByOrderId(orderId));
