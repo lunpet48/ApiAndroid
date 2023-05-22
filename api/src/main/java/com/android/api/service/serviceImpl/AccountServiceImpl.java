@@ -24,6 +24,7 @@ import com.android.api.security.JwtTokenProvider;
 import com.android.api.service.AccountService;
 
 import jakarta.mail.internet.MimeMessage;
+import jakarta.persistence.Tuple;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -93,7 +94,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String login(String username, String password) {
+    public List<String> login(String username, String password) {
         // Xác thực từ username và password.
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -107,7 +108,15 @@ public class AccountServiceImpl implements AccountService {
         // Trả về jwt cho người dùng.
         String jwt = tokenProvider.generateToken((AccountDetails) authentication.getPrincipal());
         System.out.println(jwt);
-        return jwt;
+        String role = accountRepository.findByUsername(username).get().getRole();
+        
+        List<String> list = new ArrayList<>();
+
+        list.add(jwt);
+        list.add(role);
+
+        return list;
+
     }
 
     @Override

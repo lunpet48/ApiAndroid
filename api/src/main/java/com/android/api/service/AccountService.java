@@ -1,12 +1,15 @@
 package com.android.api.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.android.api.entity.Account;
 
+import jakarta.persistence.Tuple;
+
 public interface AccountService {
-    String login(String username, String password);
+    List<String> login(String username, String password);
 
     String registerUser(Account account, String email) throws Exception;
 

@@ -1,5 +1,7 @@
 package com.android.api.api;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,13 +50,17 @@ public class LoginAPI {
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto) {
-        String jwt = accountService.login(loginDto.getUsername(), loginDto.getPassword());
+        List<String> result = accountService.login(loginDto.getUsername(), loginDto.getPassword());
 
-        if (jwt.isEmpty()) {
+        if (result.get(0).isEmpty()) {
             return ResponseEntity.badRequest().body("Invalid username or password!!");
         }
 
-        return ResponseEntity.ok().body(jwt);
+        JSONObject jo = new JSONObject();
+        jo.put("token", result.get(0));
+        jo.put("role", result.get(1));
+
+        return ResponseEntity.ok().body(jo);
     }
 
     /*
